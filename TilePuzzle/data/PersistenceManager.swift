@@ -1,5 +1,5 @@
 //
-//  PersistantManager.swift
+//  PersistenceManager.swift
 //  TilePuzzle
 //
 //  Created by Joe Kovalik-Haas on 5/14/19.
@@ -7,18 +7,15 @@
 //
 
 import Foundation
-
-import Foundation
 import CoreData
 
 final class PersistenceManager {
 	
-	private init() {}
 	static let shared = PersistenceManager()
 	
-	// creates core data container
+	// create container for core data
 	lazy var persistentContainer: NSPersistentContainer = {
-		let container = NSPersistentContainer(name: "Learning_Core_Data")
+		let container = NSPersistentContainer(name: "CoreData")
 		container.loadPersistentStores(completionHandler: { (storeDescription, error) in
 			if let error = error as NSError? {
 				fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -34,7 +31,6 @@ final class PersistenceManager {
 		if context.hasChanges {
 			do {
 				try context.save()
-				print("saved successfully")
 			} catch {
 				let nserror = error as NSError
 				fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
@@ -42,24 +38,33 @@ final class PersistenceManager {
 		}
 	}
 	
-	// load support for core data
-	func fetch<T: NSManagedObject>(_ objectType: T.Type) -> [T] {
-		let entityName = String(describing: objectType)
-		let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-		
+	// STAT: load support for core data
+	func fetchStat() -> [Stats] {
+		let request: NSFetchRequest<Stats> = Stats.fetchRequest()
 		do {
-			let fetchedObjects = try context.fetch(fetchRequest) as? [T]
-			return fetchedObjects ?? [T]()
+			return try context.fetch(request)
 		} catch {
 			print(error)
-			return [T]()
+			return []
 		}
 		
 	}
 	
-	// deletes core data
+	// delete from core data
 	func delete(_ object: NSManagedObject) {
 		context.delete(object)
 		save()
+	}
+}
+
+//
+extension Stats {
+	func configure(total: [Int], leastMoves: [Int], minTimes: [Double], completed: [[Int]]) -> Self {
+		self.total = total
+		self.leastMoves = leastMoves
+		self.minTimes = minTimes
+		self.completed = completed
+		
+		return self
 	}
 }

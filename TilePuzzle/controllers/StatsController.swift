@@ -7,10 +7,27 @@
 //
 
 import UIKit
+import CoreData
 
 class StatsController: UIViewController {
 	
+	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
 	let xOffset = (Globals.width - Globals.leftAlign * 2) / 3
+	
+	var leastMoves = [0, 0, 0, 0]
+	var minTime = [0.0, 0.0, 0.0, 0.0]
+	
+	let totalLabel: UILabel = {
+		let label = UILabel()
+		
+		label.text = "Total:  \(0)"
+		label.textColor = .black
+		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
+		
+		label.frame = CGRect(x: Globals.leftAlign, y: Globals.topAlign + Globals.smallTop / 2,
+							 width: Globals.xCenter, height: Globals.smallTop)
+		return label
+	}()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -20,6 +37,9 @@ class StatsController: UIViewController {
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
 		view.backgroundColor = .white
 		
+		loadStats()
+		
+		view.addSubview(totalLabel)
 		createTitleLabel()
 		createTable()
 	}
@@ -43,7 +63,9 @@ class StatsController: UIViewController {
 	
 	// crate stat "table" rows
 	func createRows(difficulty: Int, currentY: Int) {
-		let names = ["\(difficulty)", "0", "0"]
+		let names = ["\(difficulty)", formatTime(counter: minTime[difficulty - 3]),
+			"\(leastMoves[difficulty - 3])"]
+		
 		for i in 0...names.count - 1 {
 			let label = UILabel()
 			
@@ -65,5 +87,24 @@ class StatsController: UIViewController {
 		for i in 0...difficulties.count - 1 {
 			createRows(difficulty: difficulties[i], currentY: initY + Globals.smallTop * i)
 		}
+	}
+	
+	// loads stats from core data
+	func loadStats() {
+		var stats: [Stats?] = persistenceManager!.fetchStat()
+		if stats.isEmpty {
+			return
+		}
+		totalLabel.text = "Total:  \(stats[0]!.total!.reduce(0, +))"
+		leastMoves = stats[0]!.leastMoves!
+		minTime = stats[0]!.minTimes!
+	}
+	
+	//
+	func formatTime(counter: Double) -> String {
+		let hours = Int(counter) / 3600
+		let minutes = Int(counter) / 60 % 60
+		let seconds = Int(counter) % 60
+		return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
 	}
 }

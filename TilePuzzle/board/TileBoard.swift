@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 /**
  * Creates a interactable tile board based on image
@@ -37,6 +38,8 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	
 	var moves = 0
 	var timer = BoardTimer()
+	
+	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
 	
 	// initilize TileBoard with placeholdervalues
 	override init(frame: CGRect) {
@@ -142,8 +145,11 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		if array == map {
 			TilesController.isCompleted = true
 			display.isHidden = false
+			
 			timer.pauseTimer()
 			resetCurrentData()
+			
+			updateCoreData()
 			return true
 		}
 		return false
@@ -342,6 +348,28 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		defaults.removeObject(forKey: "current")
 		defaults.removeObject(forKey: "moves")
 		defaults.removeObject(forKey: "time")
+	}
+	
+	// updates core data
+	func updateCoreData() {
+		let dataIndex = size - 3
+		var stats: [Stats?] = persistenceManager!.fetchStat()
+		if stats.isEmpty {
+			return
+		}
+		stats[0]!.total![dataIndex] += 1
+		
+		let oldMoves = stats[0]!.leastMoves![dataIndex]
+		if moves < oldMoves || oldMoves == 0 {
+			stats[0]!.leastMoves![dataIndex] = moves
+		}
+		
+		let oldTime = stats[0]!.minTimes![dataIndex]
+		if timer.counter < oldTime || oldTime == 0.0 {
+			stats[0]!.minTimes![dataIndex] = timer.counter
+		}
+		
+		persistenceManager!.save()
 	}
 	
 	// initilizer to compile

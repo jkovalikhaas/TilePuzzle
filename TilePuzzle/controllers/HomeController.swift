@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import CoreData
 
 class HomeController: UIViewController {
 	
+	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
 	var buttons: [UIButton] = []	// placeholder for menu buttons
 	var inProgress = false			// if a puzzle is in progress
 	
@@ -44,6 +46,8 @@ class HomeController: UIViewController {
 		
 		view.backgroundColor = .white			// sets background to white
 		navigationItem.hidesBackButton = true	// hides back button, nothing to go back to
+
+		initStatVals()
 		
 		view.addSubview(titleLabel)
 		createButtons()
@@ -139,4 +143,21 @@ class HomeController: UIViewController {
 	}
 	/// end of user defualt
 	
+	// creates completed array
+	func createCompletedArray() -> [[Int]] {
+		return [[]]
+	}
+	
+	// initialize stats values if they aren't found
+	func initStatVals() {
+		var stats: [Stats?] = persistenceManager!.fetchStat()
+		if stats[0]!.total != nil {
+			return
+		}
+		stats[0] = stats[0]!.configure(total: [0, 0, 0, 0], leastMoves: [0, 0, 0, 0],
+							minTimes: [0.0, 0.0, 0.0, 0.0],
+							completed: createCompletedArray())
+	
+		persistenceManager!.save()
+	}
 }
