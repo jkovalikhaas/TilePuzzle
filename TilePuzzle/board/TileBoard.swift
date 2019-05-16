@@ -369,6 +369,9 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			stats[0]!.minTimes![dataIndex] = timer.counter
 		}
 		
+		let catagoryNum = Globals.catagories.firstIndex(of: type)!
+		stats[0]!.completed![catagoryNum][index][dataIndex] += 1
+		
 		persistenceManager!.save()
 	}
 	

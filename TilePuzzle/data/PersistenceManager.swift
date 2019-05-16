@@ -59,7 +59,7 @@ final class PersistenceManager {
 
 //
 extension Stats {
-	func configure(total: [Int], leastMoves: [Int], minTimes: [Double], completed: [[Int]]) -> Self {
+	func configure(total: [Int], leastMoves: [Int], minTimes: [Double], completed: [[[Int]]]) -> Self {
 		self.total = total
 		self.leastMoves = leastMoves
 		self.minTimes = minTimes

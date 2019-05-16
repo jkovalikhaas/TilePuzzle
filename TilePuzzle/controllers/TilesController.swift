@@ -139,6 +139,8 @@ class TilesController: UICollectionViewController {
 		if TilesController.isCompleted {
 			return
 		}
+		board.moves += 10
+		TilesController.moveLabel.text = "Moves: \(board.moves)"
 		let goal = Array(0...board.length - 1)
 		for i in 0...board.board.count - 1 {
 			if goal[i] != board.map[i] && i != board.findBlank() {

@@ -143,20 +143,35 @@ class HomeController: UIViewController {
 	}
 	/// end of user defualt
 	
+	
 	// creates completed array
-	func createCompletedArray() -> [[Int]] {
-		return [[]]
+	func createCompletedArray() -> [[[Int]]] {
+		var returnArray: [[[Int]]] = []
+		for i in 0...Globals.totalCatagories - 1 {
+			var array: [[Int]] = []
+			for _ in 0...Globals.numCatagories[i] - 1 {
+				array.append([0, 0, 0, 0])
+			}
+			returnArray.append(array)
+		}
+		return returnArray
 	}
 	
 	// initialize stats values if they aren't found
 	func initStatVals() {
-		var stats: [Stats?] = persistenceManager!.fetchStat()
-		if stats[0]!.total != nil {
+		var stats = persistenceManager!.fetchStat()
+		if !stats.isEmpty {
+			if stats[0].completed![0].isEmpty || stats[0].completed![0][0].isEmpty {
+				stats[0].completed! = createCompletedArray()
+				persistenceManager!.save()
+			}
 			return
 		}
-		stats[0] = stats[0]!.configure(total: [0, 0, 0, 0], leastMoves: [0, 0, 0, 0],
-							minTimes: [0.0, 0.0, 0.0, 0.0],
-							completed: createCompletedArray())
+
+		let createStat = Stats(context: persistenceManager!.context)
+		stats.append(createStat.configure(total: [0, 0, 0, 0], leastMoves: [0, 0, 0, 0],
+										minTimes: [0.0, 0.0, 0.0, 0.0],
+										completed: createCompletedArray()))
 	
 		persistenceManager!.save()
 	}

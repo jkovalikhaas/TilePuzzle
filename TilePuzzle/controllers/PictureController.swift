@@ -15,7 +15,7 @@ class PictureController: UICollectionViewController {
 	let size = (Globals.width - Globals.leftAlign * 2) / 4
 	
 	var difficultyButtons: [UIButton] = []
-	var imageButtons: [UIButton] = []
+	var imageButtons: [PictureClass] = []
 	
 	var difficulty = 3
 	var image = 0
@@ -107,8 +107,8 @@ class PictureController: UICollectionViewController {
 	}
 	
 	// create button from image
-	func generateButtons() -> [UIButton] {
-		var buttons: [UIButton] = []
+	func generateButtons() -> [PictureClass] {
+		var pictures: [PictureClass] = []
 		
 		for i in 0...total {
 			let button = UIButton()
@@ -127,19 +127,24 @@ class PictureController: UICollectionViewController {
 				button.titleLabel?.text = "\(i - 1)"
 				button.setImage(UIImage(named: "\(i - 1)_\(type)"), for: .normal)
 			}
-			
-			let x = Globals.leftAlign + (size + size / 2) * (i % 3)
-			let y = Globals.topAlign + (size + size / 2) * (i / 3)
-			button.frame = CGRect(x: x, y: y, width: size, height: size)
+			button.frame = CGRect(x: 0, y: 0, width: size, height: size)
 			button.clipsToBounds = true
 			
 			button.addTarget(self, action: #selector(selectImage(_:)), for: .touchUpInside)
 			
-			scrollView.addSubview(button)
-			buttons.append(button)
+			// create picture class
+			let x = Globals.leftAlign + (size + size / 2) * (i % 3)
+			let y = Globals.topAlign + (size + size / 2) * (i / 3)
+			let pictureClass = PictureClass(frame: CGRect(x: x, y: y, width: size, height: y))
+			
+			let catagoryNum = Globals.catagories.firstIndex(of: type)!
+			pictureClass.setValues(button: button, type: catagoryNum, index: i - 1)
+			
+			pictures.append(pictureClass)
+			scrollView.addSubview(pictureClass)
 		}
 		
-		return buttons
+		return pictures
 	}
 	
 	// selects difficulty
@@ -179,15 +184,16 @@ class PictureController: UICollectionViewController {
 		imageSelected = true
 		
 		for i in imageButtons {
-			if i == sender {
-				if i.layer.borderWidth == 4.0 {
-					i.layer.borderWidth = 0.0
+			let current = i.button
+			if current == sender {
+				if current.layer.borderWidth == 4.0 {
+					current.layer.borderWidth = 0.0
 					imageSelected = false
 				} else {
-					i.layer.borderWidth = 4.0
+					current.layer.borderWidth = 4.0
 				}
 			} else {
-				i.layer.borderWidth = 0.0
+				current.layer.borderWidth = 0.0
 			}
 		}
 		
@@ -203,7 +209,7 @@ class PictureController: UICollectionViewController {
 		difficultySelected = false
 		
 		for i in imageButtons {
-			i.layer.borderWidth = 0.0
+			i.button.layer.borderWidth = 0.0
 		}
 		for i in difficultyButtons {
 			i.backgroundColor = .white
