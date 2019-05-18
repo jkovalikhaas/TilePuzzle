@@ -105,6 +105,8 @@ class TilesController: UICollectionViewController {
 			loadCurrentData()
 		} else {
 			board.setValues(newImage: display!, newSize: boardSize, index: imageIndex, type: type)
+			board.animateHide()
+			
 			board.shuffleBoard()
 			TilesController.timerLabel.text = "Timer:  00:00:00"
 			TilesController.moveLabel.text = "Moves: \(0)"
@@ -161,6 +163,9 @@ class TilesController: UICollectionViewController {
 	
 	// returns to original shuffled state
 	@objc func resetBoard(_ sender: UIBarButtonItem) {
+		if TilesController.isCompleted {
+			return
+		}
 		board.display.isHidden = true
 		board.resetBoard()
 	}
@@ -187,8 +192,10 @@ class TilesController: UICollectionViewController {
 		type = defaults.string(forKey: "type")!
 		display = UIImage(named: "\(imageIndex)_\(type)")
 		boardSize = defaults.integer(forKey: "size")
-		// set board values
+		// set board values then hide display
 		board.setValues(newImage: display!, newSize: boardSize, index: imageIndex, type: type)
+		board.display.isHidden = true
+		
 		let shuffled = defaults.object(forKey: "shuffled") as? [Int] ?? [Int]()
 		let map = defaults.object(forKey: "current") as? [Int] ?? [Int]()
 		// changes board to current map
@@ -202,6 +209,6 @@ class TilesController: UICollectionViewController {
 		let counter = defaults.double(forKey: "time")
 		board.timer.counter = counter
 		TilesController.timerLabel.text = board.timer.formatTime()
-		board.timer.startTimer()
+		board.timer.startTimer() // starts timer
 	}
 }

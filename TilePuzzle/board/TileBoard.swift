@@ -54,7 +54,6 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		super.init(frame: frame)
 		
 		display.frame = CGRect(x: 0, y: 0, width: Globals.boardSize, height: Globals.boardSize)
-		display.isHidden = true
 		
 		tileGesture = TileGesture(target: self, action: #selector(gesture(action:)))
 		addGestureRecognizer(tileGesture)
@@ -81,6 +80,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		addSubview(display)
 	}
 	
+	/// start of gesture functions
 	// gets start block for gesture
 	func getStartingBlock() -> Int {
 		for i in 0...length - 1 {
@@ -103,7 +103,9 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			move()
 		}
 	}
+	/// end of gesture functions
 	
+	/// start of board creation
 	// gets sub image for tile
 	private func getSubImage(frame: CGRect) -> UIImage {
 		let scale = (image.size.width / CGFloat(Globals.boardSize))	// image to view size
@@ -138,18 +140,47 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		}
 		return array
 	}
+	/// end of board creation
+	
+	/// animations
+	// animates revealing full image
+	func animateShow() {
+		display.alpha = 0
+		UIView.animate(withDuration: 1.5, delay: 0.3, options: .curveLinear, animations: {
+			self.display.alpha = 1
+		}, completion: { _ in
+			self.display.isHidden = false
+		})
+	}
+	
+	// animates full image being hidden
+	func animateHide() {
+		UIView.animate(withDuration: 1.5, delay: 0.5, options: .curveLinear, animations: {
+			self.display.alpha = 0
+		}, completion: { _ in
+			self.display.isHidden = true
+			self.display.alpha = 1
+		})
+	}
+	/// end of animations
 	
 	// check if board is complete
 	func checkFinished() -> Bool {
-		let array = Array(0...length - 1)
+		// if already completed, return
+		if TilesController.isCompleted {
+			return true
+		}
+		let array = Array(0...length - 1)	// completed array
 		if array == map {
+			// puzzle is completed
 			TilesController.isCompleted = true
 			display.isHidden = false
 			
-			timer.pauseTimer()
-			resetCurrentData()
+			timer.pauseTimer()	// stops timer
+			animateShow()	// shows full image
 			
-			updateCoreData()
+			resetCurrentData()	// clears data for current puzzle
+			updateCoreData()	// updates puzzle data
 			return true
 		}
 		return false
@@ -232,23 +263,26 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		if correct == 0 {
 			return
 		}
-
+		// move tiles until blank is in correct space
 		while currentTile != blank {
+			// check if first move
 			if moves == 0 {
 				timer.resetTimer()
 				timer.startTimer()
 			}
+			// updates moves
 			moves += 1
 			TilesController.moveLabel.text = "Moves: \(moves)"
-			
+			// finds tile to swap, then swaps
 			var swap = blank - correct
 			swapTile(a: blank, b: swap)
 			blank = findBlank()
-			swap -= correct
-			
+			swap -= correct	// update blank position
+			// checks if puzzle is complete, exits if so
 			if checkFinished() {
 				break
 			} else {
+				// only saves current data if not finished
 				saveCurrentData()
 			}
 		}
@@ -308,7 +342,8 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		if checkFinished() {
 			return
 		}
-		moves += 1
+		moves = 0
+		timer.resetTimer()
 		TilesController.moveLabel.text = "Moves: \(moves)"
 		dir = -1
 		changeBoard(array: shuffled)
@@ -357,21 +392,21 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		if stats.isEmpty {
 			return
 		}
-		stats[0]!.total![dataIndex] += 1
-		
+		stats[0]!.total![dataIndex] += 1	// increments total puzzles
+		// updates least moves if current moves is the least
 		let oldMoves = stats[0]!.leastMoves![dataIndex]
 		if moves < oldMoves || oldMoves == 0 {
 			stats[0]!.leastMoves![dataIndex] = moves
 		}
-		
+		// updates best time if current time is the best
 		let oldTime = stats[0]!.minTimes![dataIndex]
 		if timer.counter < oldTime || oldTime == 0.0 {
 			stats[0]!.minTimes![dataIndex] = timer.counter
 		}
-		
+		// updates completed puzzle
 		let catagoryNum = Globals.catagories.firstIndex(of: type)!
 		stats[0]!.completed![catagoryNum][index][dataIndex] += 1
-		
+		// saves data
 		persistenceManager!.save()
 	}
 	
