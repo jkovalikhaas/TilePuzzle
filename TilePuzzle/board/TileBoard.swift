@@ -70,7 +70,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		self.type = type
 		self.map = Array(0...length - 1)
 		self.shuffled = map
-		
+
 		display.image = newImage
 		
 		board = createBoard()
@@ -175,12 +175,13 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			// puzzle is completed
 			TilesController.isCompleted = true
 			display.isHidden = false
+			TilesController.completedImage.isHidden = false // marks that puzzle is completed
 			
 			timer.pauseTimer()	// stops timer
 			animateShow()	// shows full image
 			
-			resetCurrentData()	// clears data for current puzzle
 			updateCoreData()	// updates puzzle data
+			resetCurrentData()	// clears data for current puzzle
 			return true
 		}
 		return false
@@ -244,8 +245,8 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	
 	// make move, uses currentTile and dir
 	func move() {
-		// check if puzzle is complete
-		if checkFinished() {
+		// check if puzzle is complete or display is visible
+		if checkFinished() || !display.isHidden {
 			return
 		}
 		// not trying to move
@@ -334,7 +335,6 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			}
 			swapTile(a: i, b: index)
 		}
-		saveCurrentData()
 	}
 	
 	// reset board to original shuffle
@@ -342,11 +342,12 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		if checkFinished() {
 			return
 		}
+		changeBoard(array: shuffled)
 		moves = 0
 		timer.resetTimer()
 		TilesController.moveLabel.text = "Moves: \(moves)"
 		dir = -1
-		changeBoard(array: shuffled)
+		saveCurrentData()
 	}
 	
 	// shuffles tile board
@@ -360,6 +361,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			shuffled = Array(0...length - 1).shuffled()
 		}
 		changeBoard(array: shuffled)
+		saveCurrentData()
 	}
 	
 	// uses user defaults to save data

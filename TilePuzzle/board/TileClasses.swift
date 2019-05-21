@@ -137,6 +137,7 @@ class BoardTimer {
 		isPlaying = false
 		counter = 0.0
 		TilesController.timerLabel.text = formatTime()
+		UserDefaults.standard.set(counter, forKey: "time")
 	}
 	
 	@objc func updateTimer() {

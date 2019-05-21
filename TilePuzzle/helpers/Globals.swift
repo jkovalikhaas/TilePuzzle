@@ -34,11 +34,11 @@ class Globals {
 	static let boardRect = CGRect(x: leftAlign, y: topAlign * 3, width: boardSize, height: boardSize)
 	
 	// num images/catagories
-	static let numImages = 183
+	static let numImages = 185
 	static let totalCatagories = 15
 	static let catagories = ["pets", "cats", "deer", "farm", "smam", "lmam", "pred", "prim",
 							"sbirds", "lbirds", "amph", "rept", "seam", "fish", "bugs"]
-	static let numCatagories = [10, 13, 13, 15, 14, 11, 12, 11, 14, 14, 10, 13, 11, 12, 10]
+	static let numCatagories = [12, 13, 13, 15, 14, 11, 12, 11, 14, 14, 10, 13, 11, 12, 10]
 	
 	static let catagoryTitles = ["Pets", "Big Cats", "Hooved Animals", "Farm Animals", "Small Mammals",
 								"Large Mammals", "Carnivores", "Primates", "Small Birds", "Large Birds",

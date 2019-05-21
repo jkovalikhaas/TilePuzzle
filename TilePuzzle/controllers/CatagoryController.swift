@@ -10,9 +10,13 @@ import UIKit
 
 class CatagoryController: UITableViewController {
 	
+	let headerId = "headerId"
 	let cellId = "cellId"
+	
 	let titles = Globals.catagoryTitles
 	static let rowHeight: CGFloat = CGFloat(Globals.height / 12)
+	
+	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -27,8 +31,18 @@ class CatagoryController: UITableViewController {
 		tableView.separatorInset = UIEdgeInsets.zero
 		
 		tableView.register(CatagoryCell.self, forCellReuseIdentifier: cellId)
+		tableView.register(CatagoryHeader.self, forHeaderFooterViewReuseIdentifier: headerId)
 		
 		tableView.tableFooterView = UIView()
+		tableView.sectionHeaderHeight = CatagoryController.rowHeight
+	}
+	
+	// sets header
+	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerId)
+			as! CatagoryHeader
+		
+		return header
 	}
 	
 	// num rows
@@ -42,7 +56,7 @@ class CatagoryController: UITableViewController {
 			as! CatagoryCell
 		let name = "\(titles[indexPath.row])"
 		cell.catagoryLabel.text = name
-		cell.totalLabel.text = "\(Globals.numCatagories[indexPath.row])"
+		getCompletedRatio(cell: cell, row: indexPath.row)
 		return cell
 	}
 	
@@ -70,9 +84,84 @@ class CatagoryController: UITableViewController {
 		navigationController?.pushViewController(controller, animated: true)
 	}
 	
+	// gets ratio of completed puzzles
+	func getCompletedRatio(cell: CatagoryCell, row: Int) {
+		// loads stats core data
+		var stats: [Stats?] = persistenceManager!.fetchStat()
+		if stats.isEmpty {
+			return
+		}
+		let total = Globals.numCatagories[row] * 4	// total possible
+		// calculates currently completed
+		var complete = 0
+		let catagoryArray = stats[0]!.completed![row]	// images in catagory
+		// loops through all image arrays
+		for i in catagoryArray {
+			for j in i {
+				// increments if completed more than once
+				if j > 0 {
+					complete += 1
+				}
+			}
+		}
+		// set label to ratio
+		cell.totalLabel.text = "\(complete)/\(total)"
+	}
+	
 	// dispose of any resources that can be recreated.
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
+	}
+}
+
+// header for catagories
+class CatagoryHeader: UITableViewHeaderFooterView {
+	
+	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
+	
+	// total completed label
+	let totalLabel: UILabel = {
+		let label = UILabel()
+		label.text = "Total Completed: 0"
+		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
+		label.textAlignment = .center
+		
+		label.frame = CGRect(x: 0, y: 0, width: Globals.width, height: Int(CatagoryController.rowHeight))
+		return label
+	}()
+	
+	override init(reuseIdentifier: String?) {
+		super.init(reuseIdentifier: reuseIdentifier)
+		
+		let totalPuzzles = Globals.numImages * 4
+		totalLabel.text = "Total Completed: \(calculateTotal())/\(totalPuzzles)"
+		
+		addSubview(totalLabel)
+	}
+	
+	// calculates total completed puzzles
+	func calculateTotal() -> Int {
+		// loads stats core data
+		var stats: [Stats?] = persistenceManager!.fetchStat()
+		let completedArray = stats[0]!.completed!	// completed puzzle array
+		
+		var total = 0
+		// counts number of puzzles completed
+		for i in completedArray {
+			for j in i {
+				for k in j {
+					if k > 0 {
+						total += 1
+					}
+				}
+			}
+		}
+		
+		return total
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
 	}
 }
 
@@ -85,7 +174,7 @@ class CatagoryCell: UITableViewCell {
 	let catagoryLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Hello There"
-		label.font = UIFont.boldSystemFont(ofSize: Globals.font)
+		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		label.numberOfLines = 0
 		
 		label.frame = CGRect(x: Globals.leftAlign, y: CatagoryCell.labelY, width: Globals.xCenter, height: CatagoryCell.height)
@@ -95,7 +184,7 @@ class CatagoryCell: UITableViewCell {
 	let totalLabel: UILabel = {
 		let label = UILabel()
 		label.text = "0"
-		label.font = UIFont.boldSystemFont(ofSize: Globals.font)
+		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		label.numberOfLines = 0
 		
 		label.textAlignment = .center

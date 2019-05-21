@@ -100,7 +100,7 @@ class StatsController: UIViewController {
 		minTime = stats[0]!.minTimes!
 	}
 	
-	//
+	// formats current time
 	func formatTime(counter: Double) -> String {
 		let hours = Int(counter) / 3600
 		let minutes = Int(counter) / 60 % 60

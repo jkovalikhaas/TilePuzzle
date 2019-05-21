@@ -157,14 +157,32 @@ class HomeController: UIViewController {
 		return returnArray
 	}
 	
+	// appends to array if array has changed
+	func checkCompletedArray(array: [[[Int]]]) -> [[[Int]]] {
+		var temp = array
+		// checks if enough catagories
+		while temp.count < Globals.totalCatagories {
+			temp.append([])
+		}
+		// checks if catagories are filled
+		for i in 0...Globals.totalCatagories - 1 {
+			while temp[i].count < Globals.numCatagories[i] {
+				temp[i].append([0, 0, 0, 0])
+			}
+		}
+		return temp
+	}
+	
 	// initialize stats values if they aren't found
 	func initStatVals() {
 		var stats = persistenceManager!.fetchStat()
 		if !stats.isEmpty {
 			if stats[0].completed![0].isEmpty || stats[0].completed![0][0].isEmpty {
 				stats[0].completed! = createCompletedArray()
-				persistenceManager!.save()
+			} else {
+				stats[0].completed! = checkCompletedArray(array: stats[0].completed!)
 			}
+			persistenceManager!.save()
 			return
 		}
 

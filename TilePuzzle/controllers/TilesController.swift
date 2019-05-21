@@ -10,6 +10,8 @@ import UIKit
 
 class TilesController: UICollectionViewController {
 	
+	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
+
 	var display = UIImage(named: "0_pets")
 	var board = TileBoard(frame: Globals.boardRect)
 	var boardSize = 3
@@ -32,6 +34,17 @@ class TilesController: UICollectionViewController {
 		label.textColor = .black
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		return label
+	}()
+	// image to indicate if puzzle has been completed
+	static let completedImage: UIImageView = {
+		let imageView = UIImageView()
+		
+		imageView.image = UIImage(named: "completed")
+		let size = Globals.leftAlign
+		imageView.frame = CGRect(x: Globals.width - size * 2, y: size / 2, width: size, height: size)
+		imageView.isHidden = true
+		
+		return imageView
 	}()
 	
 	// show image button
@@ -83,6 +96,12 @@ class TilesController: UICollectionViewController {
 		return button
 	}()
 	
+	// what to do before view appears
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		hideCompleted() // determines if current puzzle has been completed
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// set navigation bar
@@ -113,6 +132,7 @@ class TilesController: UICollectionViewController {
 		}
 		
 		view.addSubview(board)
+		collectionView.addSubview(TilesController.completedImage)
 		collectionView.addSubview(showButton)
 		collectionView.addSubview(checkButton)
 		collectionView.addSubview(TilesController.timerLabel)
@@ -182,6 +202,19 @@ class TilesController: UICollectionViewController {
 		self.type = type
 		display = UIImage(named: "\(i)_\(type)")
 		boardSize = difficulty
+	}
+	
+	// determines if current puzzle has been completed
+	func hideCompleted() {
+		let stats: [Stats?] = persistenceManager!.fetchStat()
+		let catagoryNum = Globals.catagories.firstIndex(of: type)!	// gets num of catagory
+		let currentPuzzle = stats[0]!.completed![catagoryNum][imageIndex][boardSize - 3]
+		// if completed show, else hide
+		if currentPuzzle > 0 {
+			TilesController.completedImage.isHidden = false
+		} else {
+			TilesController.completedImage.isHidden = true
+		}
 	}
 
 	// load current board data
