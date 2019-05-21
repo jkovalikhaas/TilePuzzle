@@ -32,6 +32,7 @@ class StatsController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		navigationController?.navigationBar.barStyle = .default
 		navigationItem.title = "Puzzle Stats"
 		navigationController?.navigationBar.tintColor = .white
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)

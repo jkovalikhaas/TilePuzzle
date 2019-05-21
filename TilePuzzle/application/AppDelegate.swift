@@ -16,7 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var container: PersistenceManager?
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		
 		// change nav bar
 		UINavigationBar.appearance().barTintColor = .black
 		UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]

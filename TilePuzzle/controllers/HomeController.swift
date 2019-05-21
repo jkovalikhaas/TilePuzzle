@@ -27,6 +27,7 @@ class HomeController: UIViewController {
 							 width: Globals.width, height: Globals.topAlign)
 		return label
 	}()
+	
 	// checks if there is saved data before controller loads
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(true)
@@ -192,5 +193,10 @@ class HomeController: UIViewController {
 										completed: createCompletedArray()))
 	
 		persistenceManager!.save()
+	}
+	
+	// change to light status bar
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		return .lightContent
 	}
 }
