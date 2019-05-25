@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Achievments" representedClassName="Achievments" syncable="YES" codeGenerationType="class">
+        <attribute name="attribute" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="Custom" representedClassName="Custom" syncable="YES" codeGenerationType="class">
+        <attribute name="completed" optional="YES" attributeType="Transformable" customClassName="[Int]" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" customClassName="[Data]" syncable="YES"/>
+    </entity>
+    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class">
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+    </entity>
+    <entity name="Favorites" representedClassName="Favorites" syncable="YES" codeGenerationType="class">
+        <attribute name="completed" optional="YES" attributeType="Transformable" customClassName="[[Int]]" syncable="YES"/>
+        <attribute name="images" optional="YES" attributeType="Transformable" customClassName="[String]" syncable="YES"/>
+    </entity>
     <entity name="Stats" representedClassName="Stats" syncable="YES" codeGenerationType="class">
         <attribute name="completed" optional="YES" attributeType="Transformable" customClassName="[[[Int]]]" syncable="YES"/>
         <attribute name="leastMoves" optional="YES" attributeType="Transformable" customClassName="[Int]" syncable="YES"/>
@@ -8,5 +22,9 @@
     </entity>
     <elements>
         <element name="Stats" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="Custom" positionX="-54" positionY="18" width="128" height="75"/>
+        <element name="Entity" positionX="-36" positionY="36" width="128" height="60"/>
+        <element name="Achievments" positionX="-18" positionY="45" width="128" height="60"/>
+        <element name="Favorites" positionX="0" positionY="54" width="128" height="75"/>
     </elements>
 </model>

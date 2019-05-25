@@ -13,6 +13,8 @@ class CatagoryController: UITableViewController {
 	let headerId = "headerId"
 	let cellId = "cellId"
 	
+	var customTotal = 0
+	let cellOffset = 1	// offset to preloaded catagories
 	let titles = Globals.catagoryTitles
 	static let rowHeight: CGFloat = CGFloat(Globals.height / 12)
 	
@@ -47,16 +49,23 @@ class CatagoryController: UITableViewController {
 	
 	// num rows
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return titles.count
+		return titles.count + cellOffset
 	}
 
 	// create tableview cells from titles
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
 			as! CatagoryCell
-		let name = "\(titles[indexPath.row])"
+		
+		var name = ""
+		if indexPath.row == 0 {
+			name = "Custom"
+			getCustomRatio(cell: cell)
+		} else {
+			name = "\(titles[indexPath.row - cellOffset])"
+			getCompletedRatio(cell: cell, row: indexPath.row - cellOffset)
+		}
 		cell.catagoryLabel.text = name
-		getCompletedRatio(cell: cell, row: indexPath.row)
 		return cell
 	}
 	
@@ -72,7 +81,7 @@ class CatagoryController: UITableViewController {
 	
 	// gets random puzzle
 	@objc func randomPuzzle(_ sender: UIBarButtonItem) {
-		let randomNum: Int = (0...Globals.numImages - 1).randomElement()!
+		let randomNum: Int = (0...Globals.numImages).randomElement()!
 		let randomCatagory = randomNum % Globals.numCatagories.count
 		pushPictures(index: randomCatagory)
 	}
@@ -80,8 +89,35 @@ class CatagoryController: UITableViewController {
 	// pushes to PictureController
 	func pushPictures(index: Int) {
 		let controller = PictureController(collectionViewLayout: UICollectionViewFlowLayout())
-		controller.setTypeValues(val: Globals.catagories[index], num: Globals.numCatagories[index])
+		if index == 0 {
+			controller.setTypeValues(val: "custom", num: customTotal)
+		} else {
+			controller.setTypeValues(val: Globals.catagories[index - cellOffset], num: Globals.numCatagories[index - cellOffset])
+		}
 		navigationController?.pushViewController(controller, animated: true)
+	}
+	
+	// gets completed ratio for custom puzzles
+	func getCustomRatio(cell: CatagoryCell) {
+		let custom = persistenceManager!.fetchCustom()
+		if custom.isEmpty {
+			cell.totalLabel.text = "0/0"
+			cell.isUserInteractionEnabled = false
+			return
+		}
+		customTotal = custom.count
+		let total = custom.count * 4
+		var complete = 0
+		// count completed
+		for i in custom {
+			for j in i.completed! {
+				if j > 0 {
+					complete += 1
+				}
+			}
+		}
+		// set label to ratio
+		cell.totalLabel.text = "\(complete)/\(total)"
 	}
 	
 	// gets ratio of completed puzzles
@@ -156,7 +192,6 @@ class CatagoryHeader: UITableViewHeaderFooterView {
 				}
 			}
 		}
-		
 		return total
 	}
 	

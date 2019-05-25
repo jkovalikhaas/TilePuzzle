@@ -10,6 +10,7 @@ import UIKit
 
 class PictureController: UICollectionViewController {
 	
+	var pickerTitle = "Image Picker"
 	let numImages = Globals.numImages
 	var scrollView: UIScrollView!
 	let size = (Globals.width - Globals.leftAlign * 2) / 4
@@ -24,6 +25,7 @@ class PictureController: UICollectionViewController {
 	
 	var type = Globals.catagories[0]
 	var total = Globals.numCatagories[0]
+	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
 	
 	let difficultyLabel: UILabel = {
 		let label = UILabel()
@@ -40,7 +42,7 @@ class PictureController: UICollectionViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		navigationItem.title = "Image Picker"
+		navigationItem.title = "\(pickerTitle)"
 		navigationController?.navigationBar.tintColor = .white
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
 		collectionView.backgroundColor = .white
@@ -111,6 +113,7 @@ class PictureController: UICollectionViewController {
 		var pictures: [PictureClass] = []
 		
 		for i in 0...total {
+			var catagoryNum = 0
 			let button = UIButton()
 			
 			button.backgroundColor = .black
@@ -125,7 +128,14 @@ class PictureController: UICollectionViewController {
 			} else {
 				button.setTitle("\(i - 1)", for: .normal)
 				button.titleLabel?.text = "\(i - 1)"
-				button.setImage(UIImage(named: "\(i - 1)_\(type)"), for: .normal)
+				// if custom
+				if type == "custom" {
+					button.setImage(LoadCustom.loadCustomImage(index: i - 1), for: .normal)
+					catagoryNum = -1
+				} else {
+					button.setImage(UIImage(named: "\(i - 1)_\(type)"), for: .normal)
+					catagoryNum = Globals.catagories.firstIndex(of: type)! // get catagory num
+				}
 			}
 			button.frame = CGRect(x: 0, y: 0, width: size, height: size)
 			button.clipsToBounds = true
@@ -136,8 +146,7 @@ class PictureController: UICollectionViewController {
 			let x = Globals.leftAlign + (size + size / 2) * (i % 3)
 			let y = Globals.topAlign + (size + size / 2) * (i / 3)
 			let pictureClass = PictureClass(frame: CGRect(x: x, y: y, width: size, height: y))
-			
-			let catagoryNum = Globals.catagories.firstIndex(of: type)!
+
 			pictureClass.setValues(button: button, type: catagoryNum, index: i - 1)
 			
 			pictures.append(pictureClass)
@@ -225,5 +234,10 @@ class PictureController: UICollectionViewController {
 	func setTypeValues(val: String, num: Int) {
 		type = val
 		total = num
+		if type == "custom" {
+			pickerTitle = "Custom"
+		} else {
+			pickerTitle = Globals.catagoryTitles[Globals.catagories.firstIndex(of: type)!]
+		}
 	}
 }

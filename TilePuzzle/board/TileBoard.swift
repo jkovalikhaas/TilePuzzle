@@ -397,17 +397,22 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		stats[0]!.total![dataIndex] += 1	// increments total puzzles
 		// updates least moves if current moves is the least
 		let oldMoves = stats[0]!.leastMoves![dataIndex]
-		if moves < oldMoves || oldMoves == 0 {
+		if moves < oldMoves || oldMoves == 0 && moves != 0 {
 			stats[0]!.leastMoves![dataIndex] = moves
 		}
 		// updates best time if current time is the best
 		let oldTime = stats[0]!.minTimes![dataIndex]
-		if timer.counter < oldTime || oldTime == 0.0 {
+		if timer.counter < oldTime || oldTime == 0.0 && timer.counter != 0.0 {
 			stats[0]!.minTimes![dataIndex] = timer.counter
 		}
 		// updates completed puzzle
-		let catagoryNum = Globals.catagories.firstIndex(of: type)!
-		stats[0]!.completed![catagoryNum][index][dataIndex] += 1
+		if type == "custom" {
+			let custom = persistenceManager!.fetchCustom()
+			custom[index].completed![dataIndex] += 1
+		} else {
+			let catagoryNum = Globals.catagories.firstIndex(of: type)!
+			stats[0]!.completed![catagoryNum][index][dataIndex] += 1
+		}
 		// saves data
 		persistenceManager!.save()
 	}

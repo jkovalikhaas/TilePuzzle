@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 final class PersistenceManager {
 	
@@ -47,7 +48,17 @@ final class PersistenceManager {
 			print(error)
 			return []
 		}
-		
+	}
+	
+	// CUSTOM: load support for core data
+	func fetchCustom() -> [Custom] {
+		let request: NSFetchRequest<Custom> = Custom.fetchRequest()
+		do {
+			return try context.fetch(request)
+		} catch {
+			print(error)
+			return []
+		}
 	}
 	
 	// delete from core data
@@ -64,6 +75,16 @@ extension Stats {
 		self.leastMoves = leastMoves
 		self.minTimes = minTimes
 		self.completed = completed
+		
+		return self
+	}
+}
+
+//
+extension Custom {
+	func configure(completed: [Int], image: Data?) -> Self {
+		self.completed = completed
+		self.image = image
 		
 		return self
 	}

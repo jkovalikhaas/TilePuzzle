@@ -56,7 +56,7 @@ class HomeController: UIViewController {
 	
 	// creates home menu buttons
 	func createButtons() {
-		let titles = ["Continue", "New", "Stats"]
+		let titles = ["Continue", "New", "Stats", "Custom Image"]
 		
 		// sets uniform width, height, x, and y variables for the buttons
 		let width = Globals.width - Globals.leftAlign * 2
@@ -84,6 +84,7 @@ class HomeController: UIViewController {
 		buttons[0].addTarget(self, action: #selector(currentAction(_:)), for: .touchUpInside)
 		buttons[1].addTarget(self, action: #selector(newAction(_:)), for: .touchUpInside)
 		buttons[2].addTarget(self, action: #selector(pushStats(_:)), for: .touchUpInside)
+		buttons[3].addTarget(self, action: #selector(pushCustom(_:)), for: .touchUpInside)
 	}
 	
 	/// actions for buttons
@@ -107,6 +108,12 @@ class HomeController: UIViewController {
 	// goes to stats controller
 	@objc func pushStats(_ sender: UIButton) {
 		let controller = StatsController()
+		navigationController?.pushViewController(controller, animated: true)
+	}
+	
+	// pushs to custom image creation
+	@objc func pushCustom(_ sender: UIButton) {
+		let controller = CustomController()
 		navigationController?.pushViewController(controller, animated: true)
 	}
 	/// end of button actions
@@ -176,6 +183,7 @@ class HomeController: UIViewController {
 	
 	// initialize stats values if they aren't found
 	func initStatVals() {
+		// set up stats
 		var stats = persistenceManager!.fetchStat()
 		if !stats.isEmpty {
 			if stats[0].completed![0].isEmpty || stats[0].completed![0][0].isEmpty {
@@ -183,16 +191,14 @@ class HomeController: UIViewController {
 			} else {
 				stats[0].completed! = checkCompletedArray(array: stats[0].completed!)
 			}
-			persistenceManager!.save()
-			return
+		} else {
+			let createStat = Stats(context: persistenceManager!.context)
+			stats.append(createStat.configure(total: [0, 0, 0, 0], leastMoves: [0, 0, 0, 0],
+											  minTimes: [0.0, 0.0, 0.0, 0.0],
+											  completed: createCompletedArray()))
 		}
-
-		let createStat = Stats(context: persistenceManager!.context)
-		stats.append(createStat.configure(total: [0, 0, 0, 0], leastMoves: [0, 0, 0, 0],
-										minTimes: [0.0, 0.0, 0.0, 0.0],
-										completed: createCompletedArray()))
-	
-		persistenceManager!.save()
+		
+		persistenceManager!.save()	// save data
 	}
 	
 	// change to light status bar

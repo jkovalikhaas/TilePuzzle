@@ -35,11 +35,21 @@ class PictureClass: UIView {
 	
 	// creates completed visuals
 	func createVisuals() {
-		if index == -1 {
+		// return if "random" tile
+		if index < 0 {
 			return
 		}
-		let stats: [Stats?] = persistenceManager!.fetchStat()
-		let completedArray = stats[0]!.completed![type][index]
+
+		var completedArray = [0, 0, 0, 0]	// placeholder
+		if type < 0 {
+			// custom image
+			let custom = persistenceManager!.fetchCustom()
+			completedArray = custom[index].completed!
+		} else {
+			// normal image
+			let stats: [Stats?] = persistenceManager!.fetchStat()
+			completedArray = stats[0]!.completed![type][index]
+		}
 		
 		for i in 0...completedArray.count - 1 {
 			let label = UILabel()
@@ -48,7 +58,7 @@ class PictureClass: UIView {
 			label.layer.cornerRadius = 4
 			label.clipsToBounds = true
 			
-			if stats[0]!.completed![type][index][i] >= 1 {
+			if completedArray[i] >= 1 {
 				label.backgroundColor = .black
 			}
 			
@@ -63,5 +73,16 @@ class PictureClass: UIView {
 	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+}
+
+// loads custom image from core data
+class LoadCustom {
+	static let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
+	static func loadCustomImage(index: Int) -> UIImage {
+		let custom = LoadCustom.persistenceManager!.fetchCustom()
+		let customData = custom[index].image
+		let image = UIImage(data: customData!)
+		return image!
 	}
 }

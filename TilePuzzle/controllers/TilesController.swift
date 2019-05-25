@@ -96,6 +96,31 @@ class TilesController: UICollectionViewController {
 		return button
 	}()
 	
+	// remove custom image from button memory
+	let removeButton: UIButton = {
+		let button = UIButton()
+		button.isHidden = true
+		
+		button.backgroundColor = .red
+		button.layer.cornerRadius = 10
+		button.showsTouchWhenHighlighted = true
+		
+		button.setTitle("Remove Custom Image", for: .normal)
+		button.titleLabel?.text = "Remove Custom Image"
+		button.titleLabel?.font = UIFont.systemFont(ofSize: Globals.font)
+		button.setTitleColor(.white, for: .normal)
+		
+		let width =  Globals.width / 2
+		let height = Globals.smallTop / 2
+		let x = Globals.xCenter - width / 2
+		let y = Globals.height - Globals.topAlign * 2
+		button.frame = CGRect(x: x, y: y, width: width, height: height)
+		
+		button.addTarget(self, action: #selector(removeCustomImage(_:)), for: .touchUpInside)
+		
+		return button
+	}()
+	
 	// what to do before view appears
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
@@ -130,6 +155,10 @@ class TilesController: UICollectionViewController {
 			TilesController.timerLabel.text = "Timer:  00:00:00"
 			TilesController.moveLabel.text = "Moves: \(0)"
 		}
+		// reveal remove button if a custom image
+		if type == "custom" {
+			removeButton.isHidden = false
+		}
 		
 		view.addSubview(board)
 		collectionView.addSubview(TilesController.completedImage)
@@ -137,6 +166,7 @@ class TilesController: UICollectionViewController {
 		collectionView.addSubview(checkButton)
 		collectionView.addSubview(TilesController.timerLabel)
 		collectionView.addSubview(TilesController.moveLabel)
+		collectionView.addSubview(removeButton)
 	}
 	
 	// shows image
@@ -200,15 +230,34 @@ class TilesController: UICollectionViewController {
 	func setDisplay(i: Int, difficulty: Int, type: String) {
 		imageIndex = i
 		self.type = type
-		display = UIImage(named: "\(i)_\(type)")
+		if self.type == "custom" {
+			display = LoadCustom.loadCustomImage(index: i)
+		} else {
+			display = UIImage(named: "\(i)_\(type)")
+		}
 		boardSize = difficulty
 	}
 	
+	// removes custom image from memory
+	@objc func removeCustomImage(_ sender: UIButton) {
+		board.timer.resetTimer()
+		board.resetCurrentData()
+		let custom = persistenceManager!.fetchCustom()
+		persistenceManager!.delete(custom[imageIndex])
+		navigationController?.popToRootViewController(animated: true) // return to root
+	}
+	 
 	// determines if current puzzle has been completed
 	func hideCompleted() {
-		let stats: [Stats?] = persistenceManager!.fetchStat()
-		let catagoryNum = Globals.catagories.firstIndex(of: type)!	// gets num of catagory
-		let currentPuzzle = stats[0]!.completed![catagoryNum][imageIndex][boardSize - 3]
+		var currentPuzzle = 0
+		if self.type == "custom" {
+			let custom = persistenceManager!.fetchCustom()
+			currentPuzzle = custom[imageIndex].completed![boardSize - 3]
+		} else {
+			let stats: [Stats?] = persistenceManager!.fetchStat()
+			let catagoryNum = Globals.catagories.firstIndex(of: type)!	// gets num of catagory
+			currentPuzzle = stats[0]!.completed![catagoryNum][imageIndex][boardSize - 3]
+		}
 		// if completed show, else hide
 		if currentPuzzle > 0 {
 			TilesController.completedImage.isHidden = false
@@ -223,7 +272,11 @@ class TilesController: UICollectionViewController {
 		// display information
 		imageIndex = defaults.integer(forKey: "index")
 		type = defaults.string(forKey: "type")!
-		display = UIImage(named: "\(imageIndex)_\(type)")
+		if type == "custom" {
+			display = LoadCustom.loadCustomImage(index: imageIndex)
+		} else {
+			display = UIImage(named: "\(imageIndex)_\(type)")
+		}
 		boardSize = defaults.integer(forKey: "size")
 		// set board values then hide display
 		board.setValues(newImage: display!, newSize: boardSize, index: imageIndex, type: type)
