@@ -11,7 +11,7 @@ import UIKit
 class TilesController: UICollectionViewController {
 	
 	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
-
+	
 	var display = UIImage(named: "0_pets")
 	var board = TileBoard(frame: Globals.boardRect)
 	var boardSize = 3
@@ -41,10 +41,32 @@ class TilesController: UICollectionViewController {
 		
 		imageView.image = UIImage(named: "completed")
 		let size = Globals.leftAlign
-		imageView.frame = CGRect(x: Globals.width - size * 2, y: size / 2, width: size, height: size)
+		imageView.frame = CGRect(x: Globals.width - size * 4, y: size / 2, width: size, height: size)
 		imageView.isHidden = true
 		
 		return imageView
+	}()
+	
+	// show "how to" image
+	let howToButton: UIButton = {
+		let button = UIButton()
+		
+		button.backgroundColor = .white
+		button.layer.cornerRadius = 10
+		button.showsTouchWhenHighlighted = true
+		button.layer.borderColor = UIColor.black.cgColor
+		button.layer.borderWidth = 1
+		
+		button.setTitle("?", for: .normal)
+		button.titleLabel?.text = "?"
+		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
+		button.setTitleColor(.black, for: .normal)
+		
+		let size = Globals.leftAlign
+		button.frame = CGRect(x: Globals.width - size * 2, y: size / 2, width: size, height: size)
+		button.addTarget(self, action: #selector(showHowTo(_:)), for: .touchUpInside)
+		
+		return button
 	}()
 	
 	// show image button
@@ -161,9 +183,11 @@ class TilesController: UICollectionViewController {
 		}
 		
 		view.addSubview(board)
-		collectionView.addSubview(TilesController.completedImage)
+		collectionView.addSubview(howToButton)
 		collectionView.addSubview(showButton)
 		collectionView.addSubview(checkButton)
+		
+		collectionView.addSubview(TilesController.completedImage)
 		collectionView.addSubview(TilesController.timerLabel)
 		collectionView.addSubview(TilesController.moveLabel)
 		collectionView.addSubview(removeButton)
@@ -246,7 +270,12 @@ class TilesController: UICollectionViewController {
 		persistenceManager!.delete(custom[imageIndex])
 		navigationController?.popToRootViewController(animated: true) // return to root
 	}
-	 
+	
+	// hides/shows how to view
+	@objc func showHowTo(_ sender: UIButton) {
+		board.howToView!.setHidden()
+	}
+	
 	// determines if current puzzle has been completed
 	func hideCompleted() {
 		var currentPuzzle = 0
@@ -265,7 +294,7 @@ class TilesController: UICollectionViewController {
 			TilesController.completedImage.isHidden = true
 		}
 	}
-
+	
 	// load current board data
 	func loadCurrentData() {
 		let defaults = UserDefaults.standard

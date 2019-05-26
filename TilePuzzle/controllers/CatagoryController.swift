@@ -81,8 +81,12 @@ class CatagoryController: UITableViewController {
 	
 	// gets random puzzle
 	@objc func randomPuzzle(_ sender: UIBarButtonItem) {
-		let randomNum: Int = (0...Globals.numImages).randomElement()!
-		let randomCatagory = randomNum % Globals.numCatagories.count
+		var randomCatagory = (0...Globals.totalCatagories).randomElement()!
+		// check if custom is empty
+		let custom = persistenceManager!.fetchCustom()
+		if randomCatagory == 0 && custom.isEmpty {
+			randomCatagory = 1	// change value
+		}
 		pushPictures(index: randomCatagory)
 	}
 	

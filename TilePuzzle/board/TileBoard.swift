@@ -38,6 +38,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	
 	var moves = 0
 	var timer = BoardTimer()
+	var howToView: HowToView?
 	
 	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
 	
@@ -54,6 +55,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		super.init(frame: frame)
 		
 		display.frame = CGRect(x: 0, y: 0, width: Globals.boardSize, height: Globals.boardSize)
+		howToView = HowToView(frame: display.frame)
 		
 		tileGesture = TileGesture(target: self, action: #selector(gesture(action:)))
 		addGestureRecognizer(tileGesture)
@@ -72,12 +74,15 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		self.shuffled = map
 
 		display.image = newImage
+		// set how to image
+		howToView!.setBoardSize(boardSize: size)
 		
 		board = createBoard()
 		for i in board {
 			self.addSubview(i)
 		}
 		addSubview(display)
+		addSubview(howToView!)
 	}
 	
 	/// start of gesture functions

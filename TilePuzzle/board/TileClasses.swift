@@ -153,3 +153,53 @@ class BoardTimer {
 		return String(format: "Timer:  %02i:%02i:%02i", hours, minutes, seconds)
 	}
 }
+
+// how to image view
+class HowToView: UIImageView {
+	
+	let infoView: UIImageView = {
+		let imageView = UIImageView()
+		imageView.image = UIImage(named: "how_to_info")
+		return imageView
+	}()
+	
+	let mapView: UIImageView = {
+		let imageView = UIImageView()
+		imageView.image = UIImage(named: "how_to_3")
+		return imageView
+	}()
+	
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+		backgroundColor = .white
+		
+		infoView.frame = frame
+		isHidden = true
+		
+		let size = frame.size.width / 3 * 2
+		let x = frame.size.width / 2 - size / 2
+		let y = frame.size.height / 3
+		mapView.frame = CGRect(x: x, y: y, width: size, height: size)
+		
+		addSubview(infoView)
+		addSubview(mapView)
+	}
+	
+	// sets image based on board size
+	func setBoardSize(boardSize: Int) {
+		mapView.image = UIImage(named: "how_to_\(boardSize)")
+	}
+	
+	// sets view to hidden/shown
+	func setHidden() {
+		if isHidden {
+			isHidden = false
+		} else {
+			isHidden = true
+		}
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+}
