@@ -35,6 +35,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	var dir = -1			// current direction of moving tile
 	var currentTile = -1	// starting tile index
 	var shuffled: [Int]		// original shuffled board
+	var isMoving = false	// if user started moving yet
 	
 	var moves = 0
 	var timer = BoardTimer()
@@ -272,9 +273,9 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		// move tiles until blank is in correct space
 		while currentTile != blank {
 			// check if first move
-			if moves == 0 {
-				timer.resetTimer()
+			if !isMoving {
 				timer.startTimer()
+				isMoving = true
 			}
 			// updates moves
 			moves += 1
@@ -348,6 +349,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			return
 		}
 		changeBoard(array: shuffled)
+		isMoving = false
 		moves = 0
 		timer.resetTimer()
 		TilesController.moveLabel.text = "Moves: \(moves)"

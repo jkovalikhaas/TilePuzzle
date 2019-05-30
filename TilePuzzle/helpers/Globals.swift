@@ -29,9 +29,21 @@ class Globals {
 	static let boldFont = CGFloat(xCenter / 10)
 	static let font = CGFloat(xCenter / 15)
 	
+	// checks if ipad/iphone
+	static let isIpad = UIDevice.current.userInterfaceIdiom == .pad
+	// used to format ipad
+	static let ipadMultiplier: Int = {
+		var num = 0
+		if isIpad {
+			num = 1
+		}
+		return num
+	}()
+	
 	// size of tile board
-	static let boardSize = width - leftAlign * 2
-	static let boardRect = CGRect(x: leftAlign, y: topAlign * 3, width: boardSize, height: boardSize)
+	static let boardSize = width - leftAlign * (2 + ipadMultiplier)
+	static let boardRect = CGRect(x: leftAlign + (leftAlign * ipadMultiplier / 2), y: topAlign * 3,
+								  width: boardSize, height: boardSize)
 	
 	// num images/catagories
 	static let numImages = 185

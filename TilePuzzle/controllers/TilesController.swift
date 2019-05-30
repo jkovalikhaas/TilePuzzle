@@ -195,7 +195,7 @@ class TilesController: UICollectionViewController {
 	
 	// shows image
 	@objc func showImage(_ sender: UIButton) {
-		if TilesController.isCompleted {
+		if TilesController.isCompleted || !board.howToView!.isHidden {
 			return
 		}
 		if board.display.isHidden == false {
@@ -212,7 +212,7 @@ class TilesController: UICollectionViewController {
 	/// for checking image
 	// shows correct tiles
 	@objc func checkTilesPressed(_ sender: UIButton) {
-		if TilesController.isCompleted {
+		if TilesController.isCompleted || !board.display.isHidden || !board.howToView!.isHidden {
 			return
 		}
 		board.moves += 10
@@ -235,9 +235,17 @@ class TilesController: UICollectionViewController {
 	}
 	/// end of checking image
 	
+	// hides/shows how to view
+	@objc func showHowTo(_ sender: UIButton) {
+		if TilesController.isCompleted || !board.display.isHidden {
+			return
+		}
+		board.howToView!.setHidden()
+	}
+	
 	// returns to original shuffled state
 	@objc func resetBoard(_ sender: UIBarButtonItem) {
-		if TilesController.isCompleted {
+		if TilesController.isCompleted || !board.display.isHidden || !board.howToView!.isHidden {
 			return
 		}
 		board.display.isHidden = true
@@ -269,11 +277,6 @@ class TilesController: UICollectionViewController {
 		let custom = persistenceManager!.fetchCustom()
 		persistenceManager!.delete(custom[imageIndex])
 		navigationController?.popToRootViewController(animated: true) // return to root
-	}
-	
-	// hides/shows how to view
-	@objc func showHowTo(_ sender: UIButton) {
-		board.howToView!.setHidden()
 	}
 	
 	// determines if current puzzle has been completed
@@ -324,6 +327,5 @@ class TilesController: UICollectionViewController {
 		let counter = defaults.double(forKey: "time")
 		board.timer.counter = counter
 		TilesController.timerLabel.text = board.timer.formatTime()
-		board.timer.startTimer() // starts timer
 	}
 }
