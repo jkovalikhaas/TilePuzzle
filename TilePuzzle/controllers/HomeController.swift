@@ -12,8 +12,11 @@ import CoreData
 class HomeController: UIViewController {
 	
 	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
-	var buttons: [UIButton] = []	// placeholder for menu buttons
-	var inProgress = false			// if a puzzle is in progress
+	var buttons: [UIButton] = []		// placeholder for menu buttons
+	var inProgress = false				// if a puzzle is in progress
+	// determines 'color' mode
+	static var backgroundColor = UIColor.white
+	static var foregroundColor = UIColor.black
 	
 	// main title label
 	let titleLabel: UILabel = {
@@ -21,36 +24,70 @@ class HomeController: UIViewController {
 		
 		label.text = "Tile Puzzle"
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont * 2)
-		label.textColor = .black
+		label.textColor = HomeController.foregroundColor
 		label.textAlignment = .center
 		label.frame = CGRect(x: 0, y: Globals.smallTop * 2,
 							 width: Globals.width, height: Globals.topAlign)
 		return label
 	}()
 	
+	// dark mode button
+	let darkModeButton: UIButton = {
+		let button = UIButton()
+		
+		button.backgroundColor = HomeController.foregroundColor
+		button.layer.cornerRadius = 10
+		button.showsTouchWhenHighlighted = true
+		
+		let size = Globals.leftAlign
+		let y = Globals.topAlign / (1 + Globals.ipadMultiplier) + Globals.smallTop / 2
+		button.frame = CGRect(x: Globals.width - size * 2, y: y, width: size, height: size)
+		
+		button.addTarget(self, action: #selector(changeMode(_:)), for: .touchUpInside)
+		return button
+	}()
+	
 	// checks if there is saved data before controller loads
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(true)
+		let defaults = UserDefaults.standard
 		// if saved data exists show continue button, otherwise hide
 		// sets progress boolean accordingly
-		if UserDefaults.standard.integer(forKey: "size") == 0 {
+		if defaults.integer(forKey: "size") == 0 {
 			buttons[0].isHidden = true
 			inProgress = false
 		} else {
 			buttons[0].isHidden = false
 			inProgress = true
 		}
+		
+		// sets correct colors
+		if defaults.string(forKey: "background") != nil {
+			HomeController.backgroundColor = LoadCustom.loadCustomColor(name: defaults.string(forKey: "background")!)
+			HomeController.foregroundColor = LoadCustom.loadCustomColor(name: defaults.string(forKey: "foreground")!)
+		} else {
+			// save mode colors
+			defaults.set("white", forKey: "background")
+			defaults.set("black", forKey: "foreground")
+		}
+	
+		// reset button text colors
+		for i in buttons {
+			i.titleLabel?.textColor = HomeController.backgroundColor
+		}
+		
 	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		view.backgroundColor = .white			// sets background to white
+		view.backgroundColor = HomeController.backgroundColor // sets background to white
 		navigationItem.hidesBackButton = true	// hides back button, nothing to go back to
-
+		
 		initStatVals()
 		
 		view.addSubview(titleLabel)
+		view.addSubview(darkModeButton)
 		createButtons()
 	}
 	
@@ -70,12 +107,13 @@ class HomeController: UIViewController {
 			buttons.append(UIButton(frame: CGRect(x: xOffset, y: yOffset, width: width, height: height)))
 			yOffset += height + Globals.smallTop / 2	// increases y
 			
-			buttons[i].backgroundColor = .black
+			buttons[i].backgroundColor = HomeController.foregroundColor
 			buttons[i].layer.cornerRadius = 10
 			buttons[i].showsTouchWhenHighlighted = true
 			// set title
 			buttons[i].setTitle("\(titles[i])", for: .normal)
 			buttons[i].titleLabel?.text = "\(titles[i])"
+			buttons[i].titleLabel?.textColor = HomeController.backgroundColor
 			buttons[i].titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 			
 			view.addSubview(buttons[i]) // add buttons to subview
@@ -100,7 +138,7 @@ class HomeController: UIViewController {
 	
 	// pushes to current tile puzzle
 	@objc func currentAction(_ sender: UIButton) {
-		let controller = TilesController(collectionViewLayout: UICollectionViewFlowLayout())
+		let controller = TilesController()
 		controller.inProgress = true
 		navigationController?.pushViewController(controller, animated: true)
 	}
@@ -115,6 +153,32 @@ class HomeController: UIViewController {
 	@objc func pushCustom(_ sender: UIButton) {
 		let controller = CustomController()
 		navigationController?.pushViewController(controller, animated: true)
+	}
+	
+	// converts to dark/light mode
+	@objc func changeMode(_ sender: UIButton) {
+		if HomeController.backgroundColor == .white {
+			HomeController.backgroundColor = .black
+			HomeController.foregroundColor = .white
+		} else {
+			HomeController.backgroundColor = .white
+			HomeController.foregroundColor = .black
+		}
+		
+		UIView.animate(withDuration: 0.5, delay: 0.3, options: .curveEaseInOut, animations: {
+			self.darkModeButton.backgroundColor = HomeController.foregroundColor
+			self.view.backgroundColor = HomeController.backgroundColor
+			self.titleLabel.textColor = HomeController.foregroundColor
+			for i in self.buttons {
+				i.backgroundColor = HomeController.foregroundColor
+				i.titleLabel?.textColor = HomeController.backgroundColor
+			}
+		}, completion: { _ in
+			// save mode colors
+			let defaults = UserDefaults.standard
+			defaults.set(LoadCustom.getStringColor(color: HomeController.backgroundColor), forKey: "background")
+			defaults.set(LoadCustom.getStringColor(color: HomeController.foregroundColor), forKey: "foreground")
+		})
 	}
 	/// end of button actions
 	

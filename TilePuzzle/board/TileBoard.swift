@@ -148,28 +148,6 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	}
 	/// end of board creation
 	
-	/// animations
-	// animates revealing full image
-	func animateShow() {
-		display.alpha = 0
-		UIView.animate(withDuration: 1.5, delay: 0.3, options: .curveLinear, animations: {
-			self.display.alpha = 1
-		}, completion: { _ in
-			self.display.isHidden = false
-		})
-	}
-	
-	// animates full image being hidden
-	func animateHide() {
-		UIView.animate(withDuration: 1.5, delay: 0.5, options: .curveLinear, animations: {
-			self.display.alpha = 0
-		}, completion: { _ in
-			self.display.isHidden = true
-			self.display.alpha = 1
-		})
-	}
-	/// end of animations
-	
 	// check if board is complete
 	func checkFinished() -> Bool {
 		// if already completed, return
@@ -181,10 +159,14 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			// puzzle is completed
 			TilesController.isCompleted = true
 			display.isHidden = false
-			TilesController.completedImage.isHidden = false // marks that puzzle is completed
+			
+			// marks that puzzle is completed, if not marked already
+			if TilesController.completedImage.isHidden {
+				TilesController.completedImage.animateShow()
+			}
 			
 			timer.pauseTimer()	// stops timer
-			animateShow()	// shows full image
+			display.animateShow()	// shows full image
 			
 			updateCoreData()	// updates puzzle data
 			resetCurrentData()	// clears data for current puzzle

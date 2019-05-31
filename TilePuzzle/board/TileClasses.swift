@@ -15,7 +15,7 @@ class CustomTile: UIImageView {
 		super.init(frame: frame)
 		
 		backgroundColor = .clear
-		layer.borderColor = UIColor.white.cgColor
+		layer.borderColor = HomeController.backgroundColor.cgColor
 		layer.borderWidth = 1
 		isUserInteractionEnabled = true
 	}
@@ -160,18 +160,20 @@ class HowToView: UIImageView {
 	let infoView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "how_to_info")
+		imageView.alpha = 0.8
 		return imageView
 	}()
 	
 	let mapView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "how_to_3")
+		imageView.alpha = 0.9
 		return imageView
 	}()
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-		backgroundColor = .white
+		backgroundColor = UIColor(white: 1.0, alpha: 0.1)	// translucent
 		
 		infoView.frame = frame
 		isHidden = true

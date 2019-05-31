@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// create custom controller/window
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
-		
+
 		container = PersistenceManager.shared
 		// initialize card controller
 		// set root viewcontroller to HomeController

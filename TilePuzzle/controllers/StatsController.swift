@@ -21,13 +21,17 @@ class StatsController: UIViewController {
 		let label = UILabel()
 		
 		label.text = "Total:  \(0)"
-		label.textColor = .black
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		
 		label.frame = CGRect(x: Globals.leftAlign, y: Globals.topAlign + Globals.smallTop / 2,
 							 width: Globals.xCenter, height: Globals.smallTop)
 		return label
 	}()
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(true)
+		totalLabel.textColor = HomeController.foregroundColor
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -36,7 +40,7 @@ class StatsController: UIViewController {
 		navigationItem.title = "Puzzle Stats"
 		navigationController?.navigationBar.tintColor = .white
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-		view.backgroundColor = .white
+		view.backgroundColor = HomeController.backgroundColor
 		
 		loadStats()
 		
@@ -53,7 +57,7 @@ class StatsController: UIViewController {
 			let label = UILabel()
 			
 			label.text = "\(names[i])"
-			label.textColor = .black
+			label.textColor = HomeController.foregroundColor
 			label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 			
 			let x = Globals.leftAlign + xOffset * i
@@ -71,7 +75,7 @@ class StatsController: UIViewController {
 			let label = UILabel()
 			
 			label.text = names[i]
-			label.textColor = .black
+			label.textColor = HomeController.foregroundColor
 			label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 			
 			let x = Globals.leftAlign + xOffset * i

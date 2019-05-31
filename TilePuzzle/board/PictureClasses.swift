@@ -56,10 +56,11 @@ class PictureClass: UIView {
 			
 			label.layer.borderWidth = 2
 			label.layer.cornerRadius = 4
+			label.layer.borderColor = HomeController.foregroundColor.cgColor
 			label.clipsToBounds = true
 			
 			if completedArray[i] >= 1 {
-				label.backgroundColor = .black
+				label.backgroundColor = HomeController.foregroundColor
 			}
 			
 			let width = size / 9
@@ -84,5 +85,21 @@ class LoadCustom {
 		let customData = custom[index].image
 		let image = UIImage(data: customData!)
 		return image!
+	}
+	
+	static func loadCustomColor(name: String) -> UIColor {
+		var color = UIColor.white
+		if name == "black" {
+			color = UIColor.black
+		}
+		return color
+	}
+	
+	static func getStringColor(color: UIColor) -> String {
+		var name = "white"
+		if color == UIColor.black {
+			name = "black"
+		}
+		return name
 	}
 }

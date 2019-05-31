@@ -16,8 +16,9 @@ class CustomController: UIViewController, UIImagePickerControllerDelegate, UINav
 	// image not selected label
 	let unselectedLabel: UILabel = {
 		let label = UILabel()
+		label.backgroundColor = HomeController.backgroundColor
 		label.text = "No Image Selected"
-		label.textColor = .black
+		label.textColor = HomeController.foregroundColor
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		label.textAlignment = .center
 		label.frame = Globals.boardRect
@@ -28,7 +29,8 @@ class CustomController: UIViewController, UIImagePickerControllerDelegate, UINav
 	let chooseButton: UIButton = {
 		let button = UIButton()
 		
-		button.layer.borderColor = UIColor.black.cgColor
+		button.backgroundColor = HomeController.backgroundColor
+		button.layer.borderColor = HomeController.foregroundColor.cgColor
 		button.layer.borderWidth = 1.0
 		button.layer.cornerRadius = 10
 		button.showsTouchWhenHighlighted = true
@@ -36,7 +38,7 @@ class CustomController: UIViewController, UIImagePickerControllerDelegate, UINav
 		button.setTitle("Choose Image", for: .normal)
 		button.titleLabel?.text = "Choose Image"
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
-		button.setTitleColor(.black, for: .normal)
+		button.setTitleColor(HomeController.foregroundColor, for: .normal)
 		
 		let width = (Globals.width - Globals.leftAlign * 2) / 2
 		button.frame = CGRect(x: Globals.xCenter - width / 2, y: Globals.topAlign * 2,
@@ -52,12 +54,12 @@ class CustomController: UIViewController, UIImagePickerControllerDelegate, UINav
 		navigationController?.navigationBar.tintColor = .white
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(saveImage(_:)))
-		view.backgroundColor = .white
+		view.backgroundColor = HomeController.backgroundColor
 		
 		// image view
 		imageView = UIImageView(frame: Globals.boardRect)
 		imageView.backgroundColor = .clear
-		imageView.layer.borderColor = UIColor.black.cgColor
+		imageView.layer.borderColor = HomeController.foregroundColor.cgColor
 		imageView.layer.borderWidth = 1
 		
 		view.addSubview(unselectedLabel)

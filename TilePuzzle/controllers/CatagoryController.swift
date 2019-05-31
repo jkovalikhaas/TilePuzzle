@@ -27,6 +27,7 @@ class CatagoryController: UITableViewController {
 		navigationController?.navigationBar.tintColor = .white
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Random", style: .plain, target: self, action: #selector(randomPuzzle(_:)))
+		tableView.backgroundColor = HomeController.backgroundColor
 		
 		// seperator goes edge to edge
 		tableView.layoutMargins = UIEdgeInsets.zero
@@ -45,6 +46,11 @@ class CatagoryController: UITableViewController {
 			as! CatagoryHeader
 		
 		return header
+	}
+	
+	// set cell color
+	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+		cell.backgroundColor = HomeController.backgroundColor
 	}
 	
 	// num rows
@@ -175,6 +181,7 @@ class CatagoryHeader: UITableViewHeaderFooterView {
 		
 		let totalPuzzles = Globals.numImages * 4
 		totalLabel.text = "Total Completed: \(calculateTotal())/\(totalPuzzles)"
+		totalLabel.textColor = HomeController.foregroundColor
 		
 		addSubview(totalLabel)
 	}
@@ -233,6 +240,10 @@ class CatagoryCell: UITableViewCell {
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
+		
+		catagoryLabel.textColor = HomeController.foregroundColor
+		totalLabel.textColor = HomeController.foregroundColor
+		
 		addSubview(catagoryLabel)
 		addSubview(totalLabel)
 	}

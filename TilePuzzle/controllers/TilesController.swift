@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TilesController: UICollectionViewController {
+class TilesController: UIViewController {
 	
 	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
 	
@@ -24,26 +24,26 @@ class TilesController: UICollectionViewController {
 	// shows number of moves
 	static let moveLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = .black
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		return label
 	}()
 	// shows time
 	static let timerLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = .black
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		return label
 	}()
 	// image to indicate if puzzle has been completed
 	static let completedImage: UIImageView = {
 		let imageView = UIImageView()
+
+		imageView.layer.cornerRadius = 10
+		imageView.clipsToBounds = true
 		
-		imageView.image = UIImage(named: "completed")
 		let size = Globals.leftAlign
-		imageView.frame = CGRect(x: Globals.width - size * 4, y: size / 2, width: size, height: size)
+		let y = Globals.topAlign / (1 + Globals.ipadMultiplier) + Globals.smallTop / 2
+		imageView.frame = CGRect(x: Globals.width - size * 4, y: y, width: size, height: size)
 		imageView.isHidden = true
-		
 		return imageView
 	}()
 	
@@ -51,19 +51,20 @@ class TilesController: UICollectionViewController {
 	let howToButton: UIButton = {
 		let button = UIButton()
 		
-		button.backgroundColor = .white
+		button.backgroundColor = HomeController.backgroundColor
 		button.layer.cornerRadius = 10
 		button.showsTouchWhenHighlighted = true
-		button.layer.borderColor = UIColor.black.cgColor
+		button.layer.borderColor = HomeController.foregroundColor.cgColor
 		button.layer.borderWidth = 1
 		
 		button.setTitle("?", for: .normal)
 		button.titleLabel?.text = "?"
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
-		button.setTitleColor(.black, for: .normal)
+		button.setTitleColor(HomeController.foregroundColor, for: .normal)
 		
 		let size = Globals.leftAlign
-		button.frame = CGRect(x: Globals.width - size * 2, y: size / 2, width: size, height: size)
+		let y = Globals.topAlign / (1 + Globals.ipadMultiplier) + Globals.smallTop / 2
+		button.frame = CGRect(x: Globals.width - size * 2, y: y, width: size, height: size)
 		button.addTarget(self, action: #selector(showHowTo(_:)), for: .touchUpInside)
 		
 		return button
@@ -73,19 +74,19 @@ class TilesController: UICollectionViewController {
 	let showButton: UIButton = {
 		let button = UIButton()
 		
-		button.backgroundColor = .black
+		button.backgroundColor = HomeController.foregroundColor
 		button.layer.cornerRadius = 10
 		button.showsTouchWhenHighlighted = true
 		
 		button.setTitle("Show", for: .normal)
 		button.titleLabel?.text = "Show"
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
-		button.setTitleColor(.white, for: .normal)
+		button.setTitleColor(HomeController.backgroundColor, for: .normal)
 
 		let width =  Globals.width / 4
 		let height = Globals.smallTop
 		let x = Globals.xCenter - width * 3 / 2
-		let y = Int(Globals.boardRect.maxY)
+		let y = Int(Globals.boardRect.maxY) + Globals.smallTop
 		button.frame = CGRect(x: x, y: y, width: width, height: height)
 		
 		button.addTarget(self, action: #selector(showImage(_:)), for: .touchUpInside)
@@ -97,21 +98,21 @@ class TilesController: UICollectionViewController {
 	let checkButton: UIButton = {
 		let button = UIButton()
 		
-		button.backgroundColor = .black
+		button.backgroundColor = HomeController.foregroundColor
 		button.layer.cornerRadius = 10
 		button.showsTouchWhenHighlighted = true
 		
 		button.setTitle("Check", for: .normal)
 		button.titleLabel?.text = "Check"
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
-		button.setTitleColor(.white, for: .normal)
+		button.setTitleColor(HomeController.backgroundColor, for: .normal)
 		
 		let width =  Globals.width / 4
 		let height = Globals.smallTop
 		let x = Globals.xCenter + width / 2
-		let y = Int(Globals.boardRect.maxY)
+		let y = Int(Globals.boardRect.maxY) + Globals.smallTop
 		button.frame = CGRect(x: x, y: y, width: width, height: height)
-		
+
 		button.addTarget(self, action: #selector(checkTilesPressed(_:)), for: .touchDown)
 		button.addTarget(self, action: #selector(checkTilesRelease(_:)), for: .touchUpInside)
 		
@@ -127,15 +128,15 @@ class TilesController: UICollectionViewController {
 		button.layer.cornerRadius = 10
 		button.showsTouchWhenHighlighted = true
 		
-		button.setTitle("Remove Custom Image", for: .normal)
-		button.titleLabel?.text = "Remove Custom Image"
+		button.setTitle("Remove", for: .normal)
+		button.titleLabel?.text = "Remove"
 		button.titleLabel?.font = UIFont.systemFont(ofSize: Globals.font)
 		button.setTitleColor(.white, for: .normal)
 		
-		let width =  Globals.width / 2
+		let width =  Globals.width / 5
 		let height = Globals.smallTop / 2
 		let x = Globals.xCenter - width / 2
-		let y = Globals.height - Globals.topAlign * 2
+		let y = Globals.height - Globals.topAlign
 		button.frame = CGRect(x: x, y: y, width: width, height: height)
 		
 		button.addTarget(self, action: #selector(removeCustomImage(_:)), for: .touchUpInside)
@@ -146,6 +147,15 @@ class TilesController: UICollectionViewController {
 	// what to do before view appears
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+		// set mode color
+		let color = LoadCustom.getStringColor(color: HomeController.foregroundColor)
+		TilesController.completedImage.image = UIImage(named: "completed_\(color)")
+		TilesController.completedImage.backgroundColor = HomeController.backgroundColor
+		TilesController.completedImage.layer.borderWidth = 1
+		TilesController.completedImage.layer.borderColor = HomeController.foregroundColor.cgColor
+		
+		TilesController.moveLabel.textColor = HomeController.foregroundColor
+		TilesController.timerLabel.textColor = HomeController.foregroundColor
 		hideCompleted() // determines if current puzzle has been completed
 	}
 	
@@ -154,13 +164,15 @@ class TilesController: UICollectionViewController {
 		// set navigation bar
 		navigationItem.title = "Tile Game"
 		navigationController?.navigationBar.tintColor = .white
+		navigationController?.navigationBar.backgroundColor = .white
+		
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Home", style: .plain, target: self, action: #selector(homeButton(_:)))
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Reset", style: .plain, target: self, action: #selector(resetBoard(_:)))
-		collectionView.backgroundColor = .white
+		view.backgroundColor = HomeController.backgroundColor
 		
 		TilesController.isCompleted = false
 		
-		let topY = Globals.topAlign / 2 + Globals.smallTop / 2
+		let topY = Globals.topAlign + Globals.smallTop * 3 / 2
 		TilesController.moveLabel.frame = CGRect(x: Globals.leftAlign * 2, y: topY,
 								 width: Globals.xCenter, height: Globals.smallTop)
 		TilesController.timerLabel.frame = CGRect(x: Globals.xCenter, y: topY,
@@ -171,7 +183,7 @@ class TilesController: UICollectionViewController {
 			loadCurrentData()
 		} else {
 			board.setValues(newImage: display!, newSize: boardSize, index: imageIndex, type: type)
-			board.animateHide()
+			board.display.animateHide()
 			
 			board.shuffleBoard()
 			TilesController.timerLabel.text = "Timer:  00:00:00"
@@ -183,14 +195,14 @@ class TilesController: UICollectionViewController {
 		}
 		
 		view.addSubview(board)
-		collectionView.addSubview(howToButton)
-		collectionView.addSubview(showButton)
-		collectionView.addSubview(checkButton)
+		view.addSubview(howToButton)
+		view.addSubview(showButton)
+		view.addSubview(checkButton)
 		
-		collectionView.addSubview(TilesController.completedImage)
-		collectionView.addSubview(TilesController.timerLabel)
-		collectionView.addSubview(TilesController.moveLabel)
-		collectionView.addSubview(removeButton)
+		view.addSubview(TilesController.timerLabel)
+		view.addSubview(TilesController.moveLabel)
+		view.addSubview(TilesController.completedImage)
+		view.addSubview(removeButton)
 	}
 	
 	// shows image
@@ -217,6 +229,7 @@ class TilesController: UICollectionViewController {
 		}
 		board.moves += 10
 		TilesController.moveLabel.text = "Moves: \(board.moves)"
+		board.saveCurrentData()
 		let goal = Array(0...board.length - 1)
 		for i in 0...board.board.count - 1 {
 			if goal[i] != board.map[i] && i != board.findBlank() {

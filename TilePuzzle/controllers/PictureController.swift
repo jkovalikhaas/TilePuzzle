@@ -30,7 +30,7 @@ class PictureController: UICollectionViewController {
 	let difficultyLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Difficulty:"
-		label.textColor = .black
+		label.textColor = HomeController.foregroundColor
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 		
 		let y = Globals.topAlign / 2 - Globals.smallTop / 2
@@ -43,9 +43,8 @@ class PictureController: UICollectionViewController {
 		super.viewDidLoad()
 		
 		navigationItem.title = "\(pickerTitle)"
-		navigationController?.navigationBar.tintColor = .white
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
-		collectionView.backgroundColor = .white
+		collectionView.backgroundColor = HomeController.backgroundColor
 		
 		// scroll view
 		scrollView = UIScrollView(frame: view.bounds)
@@ -66,7 +65,7 @@ class PictureController: UICollectionViewController {
 	func topView() -> UIView {
 		let topView = UIView()
 		
-		topView.backgroundColor = .white
+		topView.backgroundColor = HomeController.backgroundColor
 		topView.frame = CGRect(x: 0, y: 0, width: Globals.width, height: Globals.topAlign)
 		
 		difficultyButtons = createDifficultyButtons()
@@ -86,7 +85,7 @@ class PictureController: UICollectionViewController {
 		for i in 3...6 {
 			let button = UIButton()
 			
-			button.layer.borderColor = UIColor.black.cgColor
+			button.layer.borderColor = HomeController.foregroundColor.cgColor
 			button.layer.borderWidth = 1.0
 			button.layer.cornerRadius = 10
 			button.showsTouchWhenHighlighted = true
@@ -94,7 +93,7 @@ class PictureController: UICollectionViewController {
 			button.setTitle("\(i)", for: .normal)
 			button.titleLabel?.text = "\(i)"
 			button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
-			button.setTitleColor(.black, for: .normal)
+			button.setTitleColor(HomeController.foregroundColor, for: .normal)
 			
 			let size = Globals.leftAlign
 			let x = Globals.xCenter + (size + size / 2) * (i - 3)
@@ -116,15 +115,16 @@ class PictureController: UICollectionViewController {
 			var catagoryNum = 0
 			let button = UIButton()
 			
-			button.backgroundColor = .black
+			button.backgroundColor = HomeController.foregroundColor
 			button.layer.cornerRadius = 10
-			button.layer.borderColor = UIColor.black.cgColor
+			button.layer.borderColor = HomeController.foregroundColor.cgColor
 			button.showsTouchWhenHighlighted = true
 			
 			if i == 0 {
 				button.setTitle("?", for: .normal)
 				button.titleLabel?.text = "?"
 				button.titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
+				button.setTitleColor(HomeController.backgroundColor, for: .normal)
 			} else {
 				button.setTitle("\(i - 1)", for: .normal)
 				button.titleLabel?.text = "\(i - 1)"
@@ -163,17 +163,17 @@ class PictureController: UICollectionViewController {
 		
 		for i in difficultyButtons {
 			if i == sender {
-				if i.backgroundColor == .black {
-					i.backgroundColor = .white
-					i.setTitleColor(.black, for: .normal)
+				if i.backgroundColor == HomeController.foregroundColor {
+					i.backgroundColor = HomeController.backgroundColor
+					i.setTitleColor(HomeController.foregroundColor, for: .normal)
 					difficultySelected = false
 				} else {
-					i.backgroundColor = .black
-					i.setTitleColor(.white, for: .normal)
+					i.backgroundColor = HomeController.foregroundColor
+					i.setTitleColor(HomeController.backgroundColor, for: .normal)
 				}
 			} else {
-				i.backgroundColor = .white
-				i.setTitleColor(.black, for: .normal)
+				i.backgroundColor = HomeController.backgroundColor
+				i.setTitleColor(HomeController.foregroundColor, for: .normal)
 			}
 		}
 		
@@ -221,11 +221,11 @@ class PictureController: UICollectionViewController {
 			i.button.layer.borderWidth = 0.0
 		}
 		for i in difficultyButtons {
-			i.backgroundColor = .white
-			i.setTitleColor(.black, for: .normal)
+			i.backgroundColor = HomeController.backgroundColor
+			i.setTitleColor(HomeController.foregroundColor, for: .normal)
 		}
 		
-		let controller = TilesController(collectionViewLayout: UICollectionViewFlowLayout())
+		let controller = TilesController()
 		controller.setDisplay(i: image, difficulty: difficulty, type: type)
 		navigationController?.pushViewController(controller, animated: true)
 	}
