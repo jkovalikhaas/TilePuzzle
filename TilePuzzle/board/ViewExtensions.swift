@@ -11,19 +11,19 @@ import UIKit
 // animations
 extension UIView {
 	// animates revealing full image
-	func animateShow() {
+	func animateShow(duration: Double = 1.5, delay: Double = 0.3) {
 		self.alpha = 0
 		if self.isHidden {
 			self.isHidden = false
 		}
-		UIView.animate(withDuration: 1.5, delay: 0.3, options: .curveLinear, animations: {
+		UIView.animate(withDuration: duration, delay: delay, options: .curveLinear, animations: {
 			self.alpha = 1
 		}, completion: { _ in })	// do nothing
 	}
 	
 	// animates full image being hidden
-	func animateHide() {
-		UIView.animate(withDuration: 1.5, delay: 0.5, options: .curveLinear, animations: {
+	func animateHide(duration: Double = 1.5, delay: Double = 0.5) {
+		UIView.animate(withDuration: duration, delay: delay, options: .curveLinear, animations: {
 			self.alpha = 0
 		}, completion: { _ in
 			self.isHidden = true

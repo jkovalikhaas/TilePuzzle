@@ -378,6 +378,9 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	
 	// updates core data
 	func updateCoreData() {
+		// create pop up list
+		let popUps = PopUpController()
+		
 		let dataIndex = size - 3
 		var stats: [Stats?] = persistenceManager!.fetchStat()
 		if stats.isEmpty {
@@ -388,11 +391,13 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		let oldMoves = stats[0]!.leastMoves![dataIndex]
 		if moves < oldMoves || oldMoves == 0 && moves != 0 {
 			stats[0]!.leastMoves![dataIndex] = moves
+			popUps.personalBest(type: "moves", value: TilesController.moveLabel.text!)
 		}
 		// updates best time if current time is the best
 		let oldTime = stats[0]!.minTimes![dataIndex]
 		if timer.counter < oldTime || oldTime == 0.0 && timer.counter != 0.0 {
 			stats[0]!.minTimes![dataIndex] = timer.counter
+			popUps.personalBest(type: "time", value: timer.formatTime())
 		}
 		// updates completed puzzle
 		if type == "custom" {
@@ -404,6 +409,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		}
 		// saves data
 		persistenceManager!.save()
+		popUps.displayList(view: UIApplication.shared.keyWindow!.rootViewController!)
 	}
 	
 	// initilizer to compile

@@ -24,7 +24,6 @@ class HomeController: UIViewController {
 		
 		label.text = "Tile Puzzle"
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont * 2)
-		label.textColor = HomeController.foregroundColor
 		label.textAlignment = .center
 		label.frame = CGRect(x: 0, y: Globals.smallTop * 2,
 							 width: Globals.width, height: Globals.topAlign)
@@ -35,7 +34,6 @@ class HomeController: UIViewController {
 	let darkModeButton: UIButton = {
 		let button = UIButton()
 		
-		button.backgroundColor = HomeController.foregroundColor
 		button.layer.cornerRadius = 10
 		button.showsTouchWhenHighlighted = true
 		
@@ -60,7 +58,10 @@ class HomeController: UIViewController {
 			buttons[0].isHidden = false
 			inProgress = true
 		}
-		
+	}
+	
+	func setColors() {
+		let defaults = UserDefaults.standard
 		// sets correct colors
 		if defaults.string(forKey: "background") != nil {
 			HomeController.backgroundColor = LoadCustom.loadCustomColor(name: defaults.string(forKey: "background")!)
@@ -70,17 +71,14 @@ class HomeController: UIViewController {
 			defaults.set("white", forKey: "background")
 			defaults.set("black", forKey: "foreground")
 		}
-	
-		// reset button text colors
-		for i in buttons {
-			i.titleLabel?.textColor = HomeController.backgroundColor
-		}
-		
+		titleLabel.textColor = HomeController.foregroundColor
+		darkModeButton.backgroundColor = HomeController.foregroundColor
 	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		setColors()
 		view.backgroundColor = HomeController.backgroundColor // sets background to white
 		navigationItem.hidesBackButton = true	// hides back button, nothing to go back to
 		
@@ -113,7 +111,7 @@ class HomeController: UIViewController {
 			// set title
 			buttons[i].setTitle("\(titles[i])", for: .normal)
 			buttons[i].titleLabel?.text = "\(titles[i])"
-			buttons[i].titleLabel?.textColor = HomeController.backgroundColor
+			buttons[i].setTitleColor(HomeController.backgroundColor, for: .normal)
 			buttons[i].titleLabel?.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
 			
 			view.addSubview(buttons[i]) // add buttons to subview
@@ -171,7 +169,7 @@ class HomeController: UIViewController {
 			self.titleLabel.textColor = HomeController.foregroundColor
 			for i in self.buttons {
 				i.backgroundColor = HomeController.foregroundColor
-				i.titleLabel?.textColor = HomeController.backgroundColor
+				i.setTitleColor(HomeController.backgroundColor, for: .normal)
 			}
 		}, completion: { _ in
 			// save mode colors
