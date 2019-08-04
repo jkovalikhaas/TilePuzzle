@@ -30,11 +30,7 @@ class PopUpController {
 	// creates personal best pop up, adds it to list
 	func personalBest(type: String, value: String) {
 		let view = PopUpView(frame: basicFrame)
-		var message = "New best time for this difficulty at \(value)"
-		if type == "moves" {
-			message = "New least moves for this difficulty with \(value)"
-		}
-		view.setValues(title: "Congratulations!!", message: message)
+		view.setValues(title: "New Best \(type)!", message: value)
 		list.append(view)
 	}
 	
@@ -72,7 +68,7 @@ class PopUpView: UIView {
 		label.text = "Message"
 		label.textColor = HomeController.foregroundColor
 		label.textAlignment = .center
-		label.font = UIFont.systemFont(ofSize: Globals.font)
+		label.font = UIFont.systemFont(ofSize: Globals.boldFont)
 		
 		return label
 	}()

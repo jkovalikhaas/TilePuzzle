@@ -20,11 +20,11 @@ class StatsController: UIViewController {
 	let totalLabel: UILabel = {
 		let label = UILabel()
 		
-		label.text = "Total:  \(0)"
+		label.text = "Total Puzzles Completed:  \(0)"
 		label.font = UIFont.boldSystemFont(ofSize: Globals.boldFont)
-		
+		label.textAlignment = .center
 		label.frame = CGRect(x: Globals.leftAlign, y: Globals.topAlign + Globals.smallTop / 2,
-							 width: Globals.xCenter, height: Globals.smallTop)
+							 width: Globals.width - Globals.leftAlign, height: Globals.smallTop)
 		return label
 	}()
 	
@@ -36,8 +36,7 @@ class StatsController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		navigationController?.navigationBar.barStyle = .default
-		navigationItem.title = "Puzzle Stats"
+		navigationItem.title = "Stats & Achievements"
 		navigationController?.navigationBar.tintColor = .white
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
 		view.backgroundColor = HomeController.backgroundColor
@@ -87,10 +86,10 @@ class StatsController: UIViewController {
 	// create stat "table"
 	func createTable() {
 		let difficulties = [3, 4, 5, 6]
-		let initY = Globals.topAlign * 3
+		let initY = Globals.topAlign * 2 + Globals.smallTop
 		
 		for i in 0...difficulties.count - 1 {
-			createRows(difficulty: difficulties[i], currentY: initY + Globals.smallTop * i)
+			createRows(difficulty: difficulties[i], currentY: initY + Globals.topAlign / 2 * i)
 		}
 	}
 	
@@ -100,16 +99,16 @@ class StatsController: UIViewController {
 		if stats.isEmpty {
 			return
 		}
-		totalLabel.text = "Total:  \(stats[0]!.total!.reduce(0, +))"
+		totalLabel.text = "Total Puzzles Completed:  \(stats[0]!.total!.reduce(0, +))"
 		leastMoves = stats[0]!.leastMoves!
 		minTime = stats[0]!.minTimes!
 	}
 	
 	// formats current time
 	func formatTime(counter: Double) -> String {
-		let hours = Int(counter) / 3600
 		let minutes = Int(counter) / 60 % 60
 		let seconds = Int(counter) % 60
-		return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
+		let mili = Int(counter * 10) - Int(counter) * 10
+		return String(format: "%02i:%02i.%01i", minutes, seconds, mili)
 	}
 }

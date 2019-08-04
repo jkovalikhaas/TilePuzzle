@@ -85,7 +85,6 @@ extension Custom {
 	func configure(completed: [Int], image: Data?) -> Self {
 		self.completed = completed
 		self.image = image
-		
 		return self
 	}
 }

@@ -306,11 +306,6 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		return -1
 	}
 	
-//	// solves board
-//	func solveBoard() {
-//		print("solving")
-//	}
-	
 	// changes tiles around to given board
 	func changeBoard(array: [Int]) {
 		for i in 0...length - 2 {
@@ -391,13 +386,13 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		let oldMoves = stats[0]!.leastMoves![dataIndex]
 		if moves < oldMoves || oldMoves == 0 && moves != 0 {
 			stats[0]!.leastMoves![dataIndex] = moves
-			popUps.personalBest(type: "moves", value: TilesController.moveLabel.text!)
+			popUps.personalBest(type: "Moves", value: TilesController.moveLabel.text!)
 		}
 		// updates best time if current time is the best
 		let oldTime = stats[0]!.minTimes![dataIndex]
 		if timer.counter < oldTime || oldTime == 0.0 && timer.counter != 0.0 {
 			stats[0]!.minTimes![dataIndex] = timer.counter
-			popUps.personalBest(type: "time", value: timer.formatTime())
+			popUps.personalBest(type: "Time", value: timer.formatTime())
 		}
 		// updates completed puzzle
 		if type == "custom" {

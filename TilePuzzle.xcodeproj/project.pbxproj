@@ -26,6 +26,7 @@
 		B0B1E5A5227CE77800A450A5 /* TileClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B1E5A4227CE77800A450A5 /* TileClasses.swift */; };
 		B0B1E5D12280F12D00A450A5 /* BoardSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B1E5D02280F12D00A450A5 /* BoardSolver.swift */; };
 		B0B1E5D52281364A00A450A5 /* PictureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B1E5D42281364A00A450A5 /* PictureController.swift */; };
+		B0F8AE8F22A86A6E000CE65F /* AchievementsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F8AE8E22A86A6E000CE65F /* AchievementsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		B0B1E5A4227CE77800A450A5 /* TileClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileClasses.swift; sourceTree = "<group>"; };
 		B0B1E5D02280F12D00A450A5 /* BoardSolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardSolver.swift; sourceTree = "<group>"; };
 		B0B1E5D42281364A00A450A5 /* PictureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureController.swift; sourceTree = "<group>"; };
+		B0F8AE8E22A86A6E000CE65F /* AchievementsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,11 +119,12 @@
 		B0B1E59D227BBD2D00A450A5 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
-				B0B1E598227BB8D900A450A5 /* TilesController.swift */,
-				B0B1E5D42281364A00A450A5 /* PictureController.swift */,
 				B089C2C92284F2EE00B195D7 /* HomeController.swift */,
+				B0B1E598227BB8D900A450A5 /* TilesController.swift */,
 				B089C2CE228A4B5800B195D7 /* CatagoryController.swift */,
+				B0B1E5D42281364A00A450A5 /* PictureController.swift */,
 				B089C2D0228A745500B195D7 /* StatsController.swift */,
+				B0F8AE8E22A86A6E000CE65F /* AchievementsController.swift */,
 				B089C30E2295BFF500B195D7 /* CustomController.swift */,
 			);
 			path = controllers;
@@ -242,6 +245,7 @@
 				B0B1E5D12280F12D00A450A5 /* BoardSolver.swift in Sources */,
 				B089C31122A04B2A00B195D7 /* ViewExtensions.swift in Sources */,
 				B089C31522A2E92E00B195D7 /* PopUps.swift in Sources */,
+				B0F8AE8F22A86A6E000CE65F /* AchievementsController.swift in Sources */,
 				B0B1E5A5227CE77800A450A5 /* TileClasses.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

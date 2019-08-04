@@ -62,12 +62,16 @@ class HomeController: UIViewController {
 	
 	func setColors() {
 		let defaults = UserDefaults.standard
-		// sets correct colors
-		if defaults.string(forKey: "background") != nil {
+		// load color values
+		let loadBack = defaults.string(forKey: "background")
+		let loadFore = defaults.string(forKey: "foreground")
+		// check that colors aren't equal and aren't nil
+		if loadBack != nil && loadFore != nil && loadBack != loadFore {
+			// loads colors
 			HomeController.backgroundColor = LoadCustom.loadCustomColor(name: defaults.string(forKey: "background")!)
 			HomeController.foregroundColor = LoadCustom.loadCustomColor(name: defaults.string(forKey: "foreground")!)
 		} else {
-			// save mode colors
+			// save default mode colors
 			defaults.set("white", forKey: "background")
 			defaults.set("black", forKey: "foreground")
 		}
@@ -91,7 +95,7 @@ class HomeController: UIViewController {
 	
 	// creates home menu buttons
 	func createButtons() {
-		let titles = ["Continue", "New", "Stats", "Custom Image"]
+		let titles = ["Continue", "New", "Stats & Achievements", "Custom Image"]
 		
 		// sets uniform width, height, x, and y variables for the buttons
 		let width = Globals.width - Globals.leftAlign * 2
@@ -162,7 +166,7 @@ class HomeController: UIViewController {
 			HomeController.backgroundColor = .white
 			HomeController.foregroundColor = .black
 		}
-		
+		// animate color change
 		UIView.animate(withDuration: 0.5, delay: 0.3, options: .curveEaseInOut, animations: {
 			self.darkModeButton.backgroundColor = HomeController.foregroundColor
 			self.view.backgroundColor = HomeController.backgroundColor

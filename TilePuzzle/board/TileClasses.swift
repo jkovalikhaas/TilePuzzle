@@ -147,10 +147,10 @@ class BoardTimer {
 	}
 	
 	func formatTime() -> String {
-		let hours = Int(counter) / 3600
 		let minutes = Int(counter) / 60 % 60
 		let seconds = Int(counter) % 60
-		return String(format: "Timer:  %02i:%02i:%02i", hours, minutes, seconds)
+		let mili = Int(counter * 10) - Int(counter) * 10
+		return String(format: "Timer:  %02i:%02i.%01i", minutes, seconds, mili)
 	}
 }
 
