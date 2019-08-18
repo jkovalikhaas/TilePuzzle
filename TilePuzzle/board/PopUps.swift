@@ -22,7 +22,16 @@ class PopUpController {
 		return CGRect(x: x, y: y, width: width, height: height)
 	}()
 	
-	// inits with empty pop up list
+	// frame size for completed puzzle
+	let completedFrame: CGRect = {
+		let width = Globals.boardSize - Globals.leftAlign
+		let height = Globals.boardSize - Globals.boardSize / 16
+		let x = Int(Globals.boardRect.minX) + Globals.leftAlign / 2
+		let y = Globals.height / 2 - height / 2
+		return CGRect(x: x, y: y, width: width, height: height)
+	}()
+	
+	// inits with completed view at bottom
 	init() {
 		list = []
 	}

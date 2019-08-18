@@ -46,14 +46,14 @@ class Globals {
 								  width: boardSize, height: boardSize)
 	
 	// num images/catagories
-	static let numImages = 250
-	static let totalCatagories = 18
+	static let numImages = 260
+	static let totalCatagories = 19
 	static let catagories = ["pets", "cats", "deer", "farm", "smam", "lmam", "pred", "prim",
-							"sbirds", "lbirds", "amph", "rept", "seam", "fish", "bugs", "flowers", "land1", "land2"]
-	static let numCatagories = [12, 13, 14, 17, 14, 12, 15, 15, 16, 14, 12, 13, 12, 14, 15, 10, 16, 16]
+							"sbirds", "lbirds", "amph", "rept", "seam", "fish", "bugs", "flowers", "land1", "land2", "color"]
+	static let numCatagories = [12, 13, 14, 17, 14, 12, 15, 15, 16, 14, 12, 13, 12, 14, 15, 10, 16, 16, 10]
 	
 	static let catagoryTitles = ["Pets", "Big Cats", "Hooved Animals", "Farm Animals", "Small Mammals",
 								"Large Mammals", "Carnivores", "Primates", "Small Birds", "Large Birds",
 								"Small Reptiles", "Large Reptiles", "Marine Life", "Fish", "Bugs", "Flowers",
-								"Landscapes 1", "Landscapes 2"]
+								"Landscapes 1", "Landscapes 2", "Colors"]
 }

@@ -85,15 +85,29 @@ class CatagoryController: UITableViewController {
 		return CatagoryController.rowHeight
 	}
 	
-	// gets random puzzle
+	// gets random puzzle from randomFunc
 	@objc func randomPuzzle(_ sender: UIBarButtonItem) {
-		var randomCatagory = (0...Globals.totalCatagories).randomElement()!
+		let randomDifficulty = (3...6).randomElement()!
+		let randomCatagory = (0...Globals.totalCatagories).randomElement()!
+		var randomImage = 0
+		var randomType = "pets"
 		// check if custom is empty
 		let custom = persistenceManager!.fetchCustom()
-		if randomCatagory == 0 && custom.isEmpty {
-			randomCatagory = 1	// change value
+		if randomCatagory == 0 {
+			if custom.isEmpty {
+				randomImage = (0...Globals.numCatagories[0] - 1).randomElement()!
+			} else {
+				randomImage = (0...custom.count - 1).randomElement()!
+				randomType = "custom"
+			}
+		} else {
+			randomImage = (0...Globals.numCatagories[randomCatagory - 1] - 1).randomElement()!
+			randomType = Globals.catagories[randomCatagory - 1]
 		}
-		pushPictures(index: randomCatagory)
+
+		let controller = TilesController()
+		controller.setDisplay(i: randomImage, difficulty: randomDifficulty, type: randomType)
+		navigationController?.pushViewController(controller, animated: true)
 	}
 	
 	// pushes to PictureController

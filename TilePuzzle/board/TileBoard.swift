@@ -39,6 +39,7 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	
 	var moves = 0
 	var timer = BoardTimer()
+	
 	var howToView: HowToView?
 	
 	let persistenceManager = (UIApplication.shared.delegate as? AppDelegate)!.container
@@ -166,7 +167,9 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 			}
 			
 			timer.pauseTimer()	// stops timer
+			isMoving = false
 			display.animateShow()	// shows full image
+			TilesController.coverView.animateShow()
 			
 			updateCoreData()	// updates puzzle data
 			resetCurrentData()	// clears data for current puzzle
@@ -322,9 +325,6 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	
 	// reset board to original shuffle
 	func resetBoard() {
-		if checkFinished() {
-			return
-		}
 		changeBoard(array: shuffled)
 		isMoving = false
 		moves = 0
@@ -405,6 +405,33 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 		// saves data
 		persistenceManager!.save()
 		popUps.displayList(view: UIApplication.shared.keyWindow!.rootViewController!)
+		showCompleteView()
+	}
+	
+	// shows and updates complete view
+	func showCompleteView() {
+		if size == 6 {
+			print("max size")
+			TilesController.completedNextDifficulty.isEnabled = false
+			TilesController.completedNextDifficulty.alpha = 0.3
+		} else {
+			TilesController.completedNextDifficulty.isEnabled = true
+			TilesController.completedNextDifficulty.alpha = 1.0
+		}
+		var maxNum = Globals.numCatagories[Globals.catagories.firstIndex(of: type)!] - 1
+		if type == "custum" {
+			let custom = persistenceManager!.fetchCustom()
+			maxNum = custom.count - 1
+		}
+		if index == maxNum {
+			print("max index")
+			TilesController.completedNextPuzzle.isEnabled = false
+			TilesController.completedNextPuzzle.alpha = 0.3
+		} else {
+			TilesController.completedNextPuzzle.isEnabled = true
+			TilesController.completedNextPuzzle.alpha = 1.0
+		}
+		TilesController.completedView.animateShow()
 	}
 	
 	// initilizer to compile
