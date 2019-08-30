@@ -172,12 +172,15 @@ class TilesController: UIViewController {
 		TilesController.moveLabel.textColor = HomeController.foregroundColor
 		TilesController.timerLabel.textColor = HomeController.foregroundColor
 		hideCompleted() // determines if current puzzle has been completed
+		
+		TilesController.coverView.backgroundColor = HomeController.backgroundColor
 	}
 	
 	// resets puzzle
 	func resetPuzzle() {
 		TilesController.coverView.isHidden = true
 		TilesController.completedView.isHidden = true
+		TilesController.pauseTitle.textColor = HomeController.foregroundColor
 	}
 	
 	override func viewDidLoad() {
@@ -305,7 +308,7 @@ class TilesController: UIViewController {
 	// pause button
 	@objc func pauseButton(_ sender: UIBarButtonItem) {
 		if TilesController.isCompleted {
-			return
+			navigationController?.popToRootViewController(animated: true)
 		}
 		if pauseMenu.isHidden {
 			board.timer.pauseTimer()
@@ -451,7 +454,8 @@ class TilesController: UIViewController {
 		pauseView.layer.cornerRadius = 10
 		
 		let height = Globals.boardSize - Globals.boardSize / 8
-		pauseView.frame = CGRect(x: Globals.width / 4, y: Globals.height / 2 - height / 2,
+		let boardCenter = Int(Globals.boardRect.maxY + Globals.boardRect.minY) / 2
+		pauseView.frame = CGRect(x: Globals.width / 4, y: boardCenter - height / 2,
 							width: Globals.width / 2, height: height)
 		
 		TilesController.pauseTitle.frame = CGRect(x: 0, y: pauseView.frame.height / 32,

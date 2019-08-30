@@ -411,20 +411,20 @@ class TileBoard: UIView, UIGestureRecognizerDelegate {
 	// shows and updates complete view
 	func showCompleteView() {
 		if size == 6 {
-			print("max size")
 			TilesController.completedNextDifficulty.isEnabled = false
 			TilesController.completedNextDifficulty.alpha = 0.3
 		} else {
 			TilesController.completedNextDifficulty.isEnabled = true
 			TilesController.completedNextDifficulty.alpha = 1.0
 		}
-		var maxNum = Globals.numCatagories[Globals.catagories.firstIndex(of: type)!] - 1
-		if type == "custum" {
+		var maxNum = 0
+		if type == "custom" {
 			let custom = persistenceManager!.fetchCustom()
 			maxNum = custom.count - 1
+		} else {
+			maxNum = Globals.numCatagories[Globals.catagories.firstIndex(of: type)!] - 1
 		}
 		if index == maxNum {
-			print("max index")
 			TilesController.completedNextPuzzle.isEnabled = false
 			TilesController.completedNextPuzzle.alpha = 0.3
 		} else {
